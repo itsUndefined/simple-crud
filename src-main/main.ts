@@ -10,9 +10,7 @@ app.on('ready', () => {
     height: 800
   });
 
+
   win.loadURL('http://localhost:4200');
 
 });
-
-
-
