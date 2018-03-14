@@ -1,0 +1,75 @@
+<nav class="navbar navbar-light bg-success">
+    <a class="navbar-brand">Manage Client</a>
+</nav>
+
+<br>
+
+<div class="container">
+
+  <form [formGroup]="form" (ngSubmit)="createClient()">
+
+    <div class="form-group row">
+        <label for="inputLastName" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Last Name</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
+          <input type="text" class="form-control" id="inputLastName" formControlName="lastName">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputFirstName" class="col-sm-4 col-md-3 col-lg-2 col-form-label">First Name</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
+          <input type="text" class="form-control" id="inputFirstName" formControlName="firstName">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputDateOfBirth" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Date of Birth</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
+          <input type="date" class="form-control" id="inputDateOfBirth" formControlName="dateOfBirth">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputIdentification" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Identification</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
+          <input type="number" class="form-control" id="inputIdentification" formControlName="identification">
+        </div>
+    </div>
+
+    <div class="text-center">
+      <div style="margin-bottom: 16px;">
+        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{id ? 'Edit Client' : 'Create Client'}}</button>
+        <button type="button" class="btn btn-info" (click)="isSearchFormDisplayed = !isSearchFormDisplayed">Find Client</button>
+      </div>
+
+      <div>
+        <button type="button" id="delete" class="btn btn-success btn-danger" *ngIf="id" (click)="deleteClient(id)">Delete Client</button>
+      </div>
+    </div>
+
+  </form>
+
+    <ng-container *ngIf="isSearchFormDisplayed">
+
+      <br>
+
+      <div class="text-center">
+          <h2>Εύρεση πελάτη</h2>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">First Name</label>
+        <div class="col-sm-8 col-md-9 col-lg-10 input-group">
+          <input type="text" class="form-control" id="inputSelectClient">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"></button>
+          <div class="dropdown-menu dropdown-menu-right scrollable-menu">
+            <a class="dropdown-item" *ngFor="let client of clients" (click)="onSelectClient(client)">{{client.lastName}} {{client.firstName}}</a>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+
+</div>
