@@ -9,7 +9,9 @@ import { Client } from '../client.model';
 })
 export class ManageRecordsComponent implements OnInit {
 
-  clients: Client[];
+  clients: Client[] = [];
+
+  selectedClient: Client = null;
 
   constructor(private clientService: ClientService, private ngZone: NgZone) { }
 

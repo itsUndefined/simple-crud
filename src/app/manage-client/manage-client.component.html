@@ -38,12 +38,12 @@
 
     <div class="text-center">
       <div style="margin-bottom: 16px;">
-        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{id ? 'Edit Client' : 'Create Client'}}</button>
+        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{selectedClient ? 'Edit Client' : 'Create Client'}}</button>
         <button type="button" class="btn btn-info" (click)="isSearchFormDisplayed = !isSearchFormDisplayed">Find Client</button>
       </div>
 
       <div>
-        <button type="button" id="delete" class="btn btn-success btn-danger" *ngIf="id" (click)="deleteClient(id)">Delete Client</button>
+        <button type="button" id="delete" class="btn btn-success btn-danger" *ngIf="selectedClient" (click)="deleteClient(selectedClient)">Delete Client</button>
       </div>
     </div>
 
@@ -54,21 +54,15 @@
       <br>
 
       <div class="text-center">
-          <h2>Εύρεση πελάτη</h2>
+          <h2>Select client for editing</h2>
       </div>
 
       <br>
 
       <div class="row">
-        <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">First Name</label>
-        <div class="col-sm-8 col-md-9 col-lg-10 input-group">
-          <input type="text" class="form-control" id="inputSelectClient" (keyup)="generateFoundClients($event.target.value)">
-          <button type="button" class="btn btn-default dropdown-toggle"></button>
-          <div class="dropdown-menu dropdown-menu-right scrollable-menu">
-            <a class="dropdown-item" *ngFor="let client of clientsOnDropdown" (click)="onSelectClient(client)">{{client.lastName}} {{client.firstName}}</a>
-          </div>
-
-
+        <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Full Name</label>
+        <div class="col-sm-8 col-md-9 col-lg-10">
+          <app-clients-dropdown [clients]="clients" [selectedClient]="selectedClient" (onSelectedClient)="selectClient($event)"></app-clients-dropdown>
         </div>
       </div>
     </ng-container>

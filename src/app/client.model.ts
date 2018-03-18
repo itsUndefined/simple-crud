@@ -14,8 +14,11 @@ export class Client implements TClient {
   public dateOfBirth?: Date;
   public identification?: number;
 
+  public fullName: string;
+
   constructor(client?: TClient) {
     Object.assign(this, client);
+    this.fullName = `${this.lastName} ${this.firstName}`;
   }
 
 }

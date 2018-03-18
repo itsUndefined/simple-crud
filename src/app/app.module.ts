@@ -9,10 +9,12 @@ import { AppComponent } from './app.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ManageClientComponent } from './manage-client/manage-client.component';
 import { ManageRecordsComponent } from './manage-records/manage-records.component';
+import { ClientsDropdownComponent } from './clients-dropdown/clients-dropdown.component';
 
 import { DatabaseService } from './database.service';
 import { ClientService } from './client.service';
 
+import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 
 const routes: Routes = [
   {path: '', component: MainMenuComponent},
@@ -25,7 +27,8 @@ const routes: Routes = [
     AppComponent,
     MainMenuComponent,
     ManageClientComponent,
-    ManageRecordsComponent
+    ManageRecordsComponent,
+    ClientsDropdownComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgbModule.forRoot()
   ],
-  providers: [DatabaseService, ClientService],
+  providers: [DatabaseService, ClientService, NgbDropdown],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

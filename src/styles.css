@@ -14,13 +14,16 @@ input[type=number]::-webkit-inner-spin-button {
 
 
 .dropdown-menu {
-  width: calc(100% - 30px);
-  left: auto;
+  width: 100%;
 }
 
 .scrollable-menu {
   height: auto;
   max-height: 200px;
   overflow-x: hidden;
+}
+
+.dropdown-item:focus {
+  outline: 5px auto var(--blue);
 }
 

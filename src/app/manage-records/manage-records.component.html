@@ -1,13 +1,9 @@
 <nav class="navbar navbar-light bg-success">
   <a class="navbar-brand">Manage Records</a>
 
-    <div class="input-group col-9 col-sm-8 mr-auto" style="max-width: 400px">
+    <div class="col-9 col-sm-8 mr-auto" style="max-width: 400px">
 
-      <input type="text" class="form-control" placeholder="Full Name">
-      <button type="button" class="btn btn-default dropdown-toggle"></button>
-      <div class="dropdown-menu dropdown-menu-right scrollable-menu">
-        <a class="dropdown-item" *ngFor="let client of clients">{{client.lastName}} {{client.firstName}}</a>
-      </div>
+      <app-clients-dropdown [clients]="clients" [selectedClient]="selectedClient" (onSelectedClient)="selectedClient = $event"></app-clients-dropdown>
 
     </div>
 

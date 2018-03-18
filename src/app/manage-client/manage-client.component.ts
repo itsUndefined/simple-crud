@@ -7,7 +7,6 @@ import { Client } from '../client.model';
 import { ClientService } from '../client.service';
 
 
-
 @Component({
   selector: 'app-manage-client',
   templateUrl: './manage-client.component.html',
@@ -21,9 +20,8 @@ export class ManageClientComponent implements OnInit {
 
   clients: Client[] = [];
 
-  clientsOnDropdown: Client[] = [];
+  selectedClient: Client = null;
 
-  id: number;
 
 
   constructor(private clientService: ClientService, private ngZone: NgZone) { }
@@ -41,12 +39,12 @@ export class ManageClientComponent implements OnInit {
   createClient() {
     if(this.form.valid) {
       const client = new Client(this.form.value);
-      if(this.id) { // edit user
-        client.id = this.id
+      if(this.selectedClient) { // edit user
+        client.id = this.selectedClient.id;
         this.clientService.update(client).subscribe(() => {
           this.form.reset();
           this.ngZone.run(() => {
-            this.id = undefined;
+            this.selectedClient = null;
           });
           this.fetchAllClients();
         }, (err) => {
@@ -63,40 +61,31 @@ export class ManageClientComponent implements OnInit {
     }
   }
 
-  onSelectClient(client: Client) {
-    this.id = client.id;
-    const editedValues = Object.assign({}, client);
-    delete editedValues.id;
-    this.form.setValue(editedValues);
+  selectClient(client: Client) {
+    this.selectedClient = client;
+    const formValues = Object.assign({}, client);
+    delete formValues.id;
+    delete formValues.fullName;
+    this.form.setValue(formValues);
   }
 
-  deleteClient(id: number) {
-    const client = this.clients.splice(this.clients.map((element) => {return element.id;}).indexOf(id), 1)[0];
+  deleteClient(client: Client) {
+    this.clients.splice(this.clients.indexOf(client), 1);
 
     this.clientService.delete(client).subscribe(() => {
       this.form.reset();
       this.ngZone.run(() => {
-        this.id = undefined;
+        this.selectedClient = null;
       });
     }, (err) => {
       throw err;
     });
   }
 
-
-  generateFoundClients(input: string) {
-    this.clientsOnDropdown = this.clients.filter((client) => {
-      return `${client.lastName} ${client.firstName}`.indexOf(input) == 0;
-    });
-
-    console.log(this.clientsOnDropdown);
-  }
-
   private fetchAllClients() {
     this.clientService.readAll().subscribe((data) => {
       this.ngZone.run(() => {
         this.clients = data;
-        this.clientsOnDropdown = this.clients;
       });
     }, (err) => {
       throw err;
