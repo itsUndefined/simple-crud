@@ -5,3 +5,22 @@
   background-color: #6fb139 !important;
 }
 
+/* Remove increment buttons on number inputs */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.dropdown-menu {
+  width: calc(100% - 30px);
+  left: auto;
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+

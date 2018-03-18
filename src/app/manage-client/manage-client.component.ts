@@ -21,6 +21,8 @@ export class ManageClientComponent implements OnInit {
 
   clients: Client[] = [];
 
+  clientsOnDropdown: Client[] = [];
+
   id: number;
 
 
@@ -47,13 +49,15 @@ export class ManageClientComponent implements OnInit {
             this.id = undefined;
           });
           this.fetchAllClients();
+        }, (err) => {
+          throw err;
         });
       } else { // create user
         this.clientService.create(client).subscribe(() => {
           this.form.reset();
           this.fetchAllClients();
         }, (err) => {
-          console.log(err);
+          throw err;
         });
       }
     }
@@ -67,7 +71,6 @@ export class ManageClientComponent implements OnInit {
   }
 
   deleteClient(id: number) {
-
     const client = this.clients.splice(this.clients.map((element) => {return element.id;}).indexOf(id), 1)[0];
 
     this.clientService.delete(client).subscribe(() => {
@@ -76,18 +79,27 @@ export class ManageClientComponent implements OnInit {
         this.id = undefined;
       });
     }, (err) => {
-      console.log(err);
+      throw err;
     });
+  }
+
+
+  generateFoundClients(input: string) {
+    this.clientsOnDropdown = this.clients.filter((client) => {
+      return `${client.lastName} ${client.firstName}`.indexOf(input) == 0;
+    });
+
+    console.log(this.clientsOnDropdown);
   }
 
   private fetchAllClients() {
     this.clientService.readAll().subscribe((data) => {
       this.ngZone.run(() => {
         this.clients = data;
-        this.isSearchFormDisplayed = true;
+        this.clientsOnDropdown = this.clients;
       });
     }, (err) => {
-      console.log(err);
+      throw err;
     });
   }
 

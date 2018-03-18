@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DatabaseService } from './database.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,7 @@ import { DatabaseService } from './database.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private databaseService: DatabaseService, public location: Location) {}
 
   ngOnInit() {
     this.databaseService.init().catch((err) => {
