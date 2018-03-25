@@ -3,8 +3,35 @@
 
     <div class="col-9 col-sm-8 mr-auto" style="max-width: 400px">
 
-      <app-clients-dropdown [clients]="clients" [selectedClient]="selectedClient" (onSelectedClient)="selectedClient = $event"></app-clients-dropdown>
+      <app-clients-dropdown [clients]="clients"></app-clients-dropdown>
 
     </div>
 
 </nav>
+
+<br>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" routerLink="./details" routerLinkActive="active">Details</a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" routerLink="./non_tabular" routerLinkActive="active">Non Tabular</a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" routerLink="./tabular" routerLinkActive="active">Tabular</a>
+  </li>
+
+  <li class="nav-item" >
+    <a class="nav-link" routerLink="./tabular_with_attachments" routerLinkActive="active">Tabular with attachments</a>
+  </li>
+</ul>
+
+<br>
+
+<hr>
+
+<!-- style="outline: 0.2rem solid #F7F7F7" -->
+<router-outlet ></router-outlet>

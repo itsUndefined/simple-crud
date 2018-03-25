@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from './database.service';
-import { Location } from '@angular/common';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -9,7 +8,7 @@ import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private databaseService: DatabaseService, public location: Location, private dropdownConfig: NgbDropdownConfig) {}
+  constructor(private databaseService: DatabaseService, private dropdownConfig: NgbDropdownConfig) {}
 
   ngOnInit() {
     this.databaseService.init().catch((err) => {

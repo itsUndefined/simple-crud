@@ -5,6 +5,10 @@
   background-color: #6fb139 !important;
 }
 
+.bg-success-light {
+  background-color: #d9f1c4;
+}
+
 /* Remove increment buttons on number inputs */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {

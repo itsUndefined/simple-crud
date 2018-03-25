@@ -7,3 +7,23 @@
     width: calc(100% - 15px);
   }
 }
+
+
+li.nav-item > a.nav-link:not(.active) {
+  background-color: #D9D9D9;
+}
+
+.nav-tabs .nav-link {
+  border-color: var(--gray);
+  color: var(--black);
+}
+
+a.nav-link.active {
+  border-color: transparent;
+  border-bottom: 0;
+}
+
+li.nav-item > a.nav-link:hover {
+  background-color: var(--light);
+  border-bottom: 0;
+}

@@ -10,16 +10,27 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ManageClientComponent } from './manage-client/manage-client.component';
 import { ManageRecordsComponent } from './manage-records/manage-records.component';
 import { ClientsDropdownComponent } from './clients-dropdown/clients-dropdown.component';
+import { DetailsComponent } from './manage-records/details/details.component';
+import { NonTabularComponent } from './manage-records/non-tabular/non-tabular.component';
+import { TabularComponent } from './manage-records/tabular/tabular.component';
+import { TabularWithAttachmentsComponent } from './manage-records/tabular-with-attachments/tabular-with-attachments.component';
 
 import { DatabaseService } from './database.service';
 import { ClientService } from './client.service';
 
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
+import { TabularService } from './manage-records/tabular/tabular.service';
+
 
 const routes: Routes = [
   {path: '', component: MainMenuComponent},
   {path: 'manage_client', component: ManageClientComponent},
-  {path: 'manage_records', component: ManageRecordsComponent}
+  {path: 'manage_records', component: ManageRecordsComponent, children: [
+    {path: 'details', component: DetailsComponent},
+    {path: 'non_tabular', component: NonTabularComponent},
+    {path: 'tabular', component: TabularComponent},
+    {path: 'tabular_with_attachments', component: TabularWithAttachmentsComponent}
+  ]}
 ];
 
 @NgModule({
@@ -28,7 +39,11 @@ const routes: Routes = [
     MainMenuComponent,
     ManageClientComponent,
     ManageRecordsComponent,
-    ClientsDropdownComponent
+    ClientsDropdownComponent,
+    DetailsComponent,
+    NonTabularComponent,
+    TabularComponent,
+    TabularWithAttachmentsComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +51,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgbModule.forRoot()
   ],
-  providers: [DatabaseService, ClientService, NgbDropdown],
+  providers: [DatabaseService, ClientService, TabularService, NgbDropdown],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

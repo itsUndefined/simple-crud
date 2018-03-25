@@ -11,9 +11,7 @@ export class ManageRecordsComponent implements OnInit {
 
   clients: Client[] = [];
 
-  selectedClient: Client = null;
-
-  constructor(private clientService: ClientService, private ngZone: NgZone) { }
+  constructor(public clientService: ClientService, private ngZone: NgZone) { }
 
   ngOnInit() {
     this.fetchAllClients();

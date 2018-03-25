@@ -38,12 +38,12 @@
 
     <div class="text-center">
       <div style="margin-bottom: 16px;">
-        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{selectedClient ? 'Edit Client' : 'Create Client'}}</button>
+        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{clientService.selectedClient ? 'Edit Client' : 'Create Client'}}</button>
         <button type="button" class="btn btn-info" (click)="isSearchFormDisplayed = !isSearchFormDisplayed">Find Client</button>
       </div>
 
       <div>
-        <button type="button" id="delete" class="btn btn-success btn-danger" *ngIf="selectedClient" (click)="deleteClient(selectedClient)">Delete Client</button>
+        <button type="button" id="delete" class="btn btn-success btn-danger" *ngIf="clientService.selectedClient" (click)="deleteClient()">Delete Client</button>
       </div>
     </div>
 
@@ -62,7 +62,7 @@
       <div class="row">
         <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Full Name</label>
         <div class="col-sm-8 col-md-9 col-lg-10">
-          <app-clients-dropdown [clients]="clients" [selectedClient]="selectedClient" (onSelectedClient)="selectClient($event)"></app-clients-dropdown>
+          <app-clients-dropdown [clients]="clients"></app-clients-dropdown>
         </div>
       </div>
     </ng-container>

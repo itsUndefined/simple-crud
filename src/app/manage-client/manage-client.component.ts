@@ -1,10 +1,9 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
-import { Observable } from 'rxjs/Observable';
 
 import { Client } from '../client.model';
 import { ClientService } from '../client.service';
+import { Subscription } from 'rxjs/Subscription';
 
 
 @Component({
@@ -12,19 +11,17 @@ import { ClientService } from '../client.service';
   templateUrl: './manage-client.component.html',
   styleUrls: ['./manage-client.component.css']
 })
-export class ManageClientComponent implements OnInit {
+export class ManageClientComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
-  isSearchFormDisplayed: boolean = false;
+  isSearchFormDisplayed = false;
 
   clients: Client[] = [];
 
-  selectedClient: Client = null;
+  clientChanged: Subscription;
 
-
-
-  constructor(private clientService: ClientService, private ngZone: NgZone) { }
+  constructor(public clientService: ClientService, private ngZone: NgZone) { }
 
   ngOnInit() {
     this.fetchAllClients();
@@ -34,17 +31,33 @@ export class ManageClientComponent implements OnInit {
       dateOfBirth: new FormControl(null),
       identification: new FormControl(null)
     });
+
+    // Listen for client change from service(dropdown)
+    this.clientChanged = this.clientService.onSelectedClient.subscribe(() => {
+      if (this.clientService.selectedClient) {
+        const formValues = Object.assign({}, this.clientService.selectedClient);
+        delete formValues.id;
+        delete formValues.fullName;
+        this.form.setValue(formValues);
+      }
+    }, (err) => {
+      throw err;
+    });
+  }
+
+  ngOnDestroy() {
+    this.clientChanged.unsubscribe();
   }
 
   createClient() {
-    if(this.form.valid) {
+    if (this.form.valid) {
       const client = new Client(this.form.value);
-      if(this.selectedClient) { // edit user
-        client.id = this.selectedClient.id;
+      if (this.clientService.selectedClient) { // edit user
+        client.id = this.clientService.selectedClient.id;
         this.clientService.update(client).subscribe(() => {
           this.form.reset();
           this.ngZone.run(() => {
-            this.selectedClient = null;
+            this.clientService.setSelectedClient(null);
           });
           this.fetchAllClients();
         }, (err) => {
@@ -61,21 +74,13 @@ export class ManageClientComponent implements OnInit {
     }
   }
 
-  selectClient(client: Client) {
-    this.selectedClient = client;
-    const formValues = Object.assign({}, client);
-    delete formValues.id;
-    delete formValues.fullName;
-    this.form.setValue(formValues);
-  }
+  deleteClient() {
+    this.clients.splice(this.clients.indexOf(this.clientService.selectedClient), 1);
 
-  deleteClient(client: Client) {
-    this.clients.splice(this.clients.indexOf(client), 1);
-
-    this.clientService.delete(client).subscribe(() => {
+    this.clientService.delete(this.clientService.selectedClient).subscribe(() => {
       this.form.reset();
       this.ngZone.run(() => {
-        this.selectedClient = null;
+        this.clientService.setSelectedClient(null);
       });
     }, (err) => {
       throw err;
