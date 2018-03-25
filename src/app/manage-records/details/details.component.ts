@@ -3,6 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Client, Details } from '../../client.model';
+import { ipcRenderer, IpcRenderer } from 'electron';
 
 @Component({
   selector: 'app-details',
@@ -42,32 +43,40 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
     // watch for changes in selected client
     this.clientChanged = this.clientService.onSelectedClient.subscribe((prevClient) => {
-      if (prevClient) {
-        this.saveClientData(prevClient);
-      }
-
+      this.saveClientData(prevClient);
       if (this.clientService.selectedClient) {
         this.fetchClientData();
       } else {
         this.form.disable();
       }
     });
+
+    ipcRenderer.once('closing', () => {
+      this.saveClientData(this.clientService.selectedClient, () => {
+        ipcRenderer.send('readyToClose');
+      });
+    });
+
   }
 
   ngOnDestroy() {
-    if (this.clientService.selectedClient) {
-      this.saveClientData(this.clientService.selectedClient);
-    }
+    this.saveClientData(this.clientService.selectedClient);
     this.clientChanged.unsubscribe();
+    ipcRenderer.removeAllListeners('closing');
   }
 
-  private saveClientData(client: Client) {
-    client.details = this.form.value; // Value also has identification but that's not a problem.
-    client.identification = this.form.value.identification;
-    this.clientService.writeDetails(client).subscribe(() => {
-    }, (err) => {
-      throw err;
-    });
+  private saveClientData(client: Client, callback?: () => void ) {
+    if (client) {
+      client.details = this.form.value; // Value also has identification but that's not a problem.
+      client.identification = this.form.value.identification;
+      this.clientService.writeDetails(client).subscribe(() => {
+        if (callback) { // callback is only used if there is a requirement to know when this is done.
+          callback();
+        }
+      }, (err) => {
+        throw err;
+      });
+    }
   }
 
   private fetchClientData() {

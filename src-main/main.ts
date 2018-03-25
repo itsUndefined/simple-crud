@@ -2,6 +2,8 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 
 let win: BrowserWindow;
 
+let readyToClose = false;
+
 app.on('ready', () => {
   win = new BrowserWindow({
     x: 0,
@@ -12,5 +14,17 @@ app.on('ready', () => {
 
 
   win.loadURL('http://localhost:4200');
+
+  win.on('close', (event) => {
+    if (!readyToClose) {
+      event.sender.send('closing');
+      event.preventDefault();
+    }
+  });
+
+  ipcMain.on('readyToClose', () => {
+    readyToClose = true;
+    win.close();
+  });
 
 });
