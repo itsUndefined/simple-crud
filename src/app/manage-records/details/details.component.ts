@@ -3,6 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Client, Details } from '../../client.model';
+import { ipcRenderer } from 'electron';
 
 @Component({
   selector: 'app-details',
