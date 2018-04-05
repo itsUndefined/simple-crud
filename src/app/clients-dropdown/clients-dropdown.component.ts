@@ -27,7 +27,7 @@ export class ClientsDropdownComponent implements OnChanges {
 
   onAutoComplete(event: KeyboardEvent, dropdown: NgbDropdown) {
     if (event.keyCode === 13) { // ON ENTER
-      if (this.clientsOnDropdown[0]) { // clIf the dropdown is empty do not select anything
+      if (this.clientsOnDropdown.length) { // clIf the dropdown is empty do not select anything
         this.selectClient(this.focusedClient || this.clientsOnDropdown[0]);
         dropdown.close();
         event.preventDefault(); // Prevent reopening the dropdown if the enter was sent on the dropdown button

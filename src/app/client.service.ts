@@ -43,17 +43,18 @@ export class ClientService {
   public readSingleDetails(): Observable<void> {
     return new Observable(subscriber => {
       this.databaseService.DB.get(
-      `SELECT input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, input11, input12
-      FROM details WHERE client_id = ?`,
+        `SELECT input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, input11, input12
+        FROM details WHERE clientId = ?`,
         this.selectedClient.id, (err, row: Details) => {
-        if (err) {
-          subscriber.error(err);
+          if (err) {
+            subscriber.error(err);
+            return subscriber.complete();
+          }
+          this.selectedClient.details = row;
+          subscriber.next();
           return subscriber.complete();
         }
-        this.selectedClient.details = row;
-        subscriber.next();
-        return subscriber.complete();
-      });
+      );
     });
   }
 
@@ -67,24 +68,25 @@ export class ClientService {
           }
         });
         this.databaseService.DB.run(
-        `INSERT OR REPLACE INTO details
-        (client_id, input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, input11, input12)
-            VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [client.id, client.details.input1, client.details.input2,
-        client.details.input3, client.details.input4,
-        client.details.input5, client.details.input6,
-        client.details.input7, client.details.input8,
-        client.details.input9, client.details.input10,
-        client.details.input11, client.details.input12],
-        (err) => {
-          if (err) {
-            subscriber.error(err);
+          `INSERT OR REPLACE INTO details
+          (clientId, input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, input11, input12)
+              VALUES
+          (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `, [client.id, client.details.input1, client.details.input2,
+          client.details.input3, client.details.input4,
+          client.details.input5, client.details.input6,
+          client.details.input7, client.details.input8,
+          client.details.input9, client.details.input10,
+          client.details.input11, client.details.input12],
+          (err) => {
+            if (err) {
+              subscriber.error(err);
+              return subscriber.complete();
+            }
+            subscriber.next();
             return subscriber.complete();
           }
-          subscriber.next();
-          return subscriber.complete();
-        });
+        );
       });
     });
   }

@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Client, Details } from '../../client.model';
-import { ipcRenderer, IpcRenderer } from 'electron';
 
 @Component({
   selector: 'app-details',

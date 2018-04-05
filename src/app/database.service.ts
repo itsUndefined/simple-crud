@@ -37,7 +37,7 @@ export class DatabaseService {
 
                     this.DB.run(`
                       CREATE TABLE details (
-                        client_id INTEGER UNIQUE NOT NULL REFERENCES clients(id),
+                        clientId INTEGER UNIQUE NOT NULL REFERENCES clients(id),
                         input1 TEXT,
                         input2 TEXT,
                         input3 TEXT,
@@ -54,6 +54,29 @@ export class DatabaseService {
                     `, (err4) => {
                       if (err4) {
                         return reject(err4);
+                      }
+                    });
+
+                    this.DB.run(`
+                      CREATE TABLE tabular (
+                        id INTEGER PRIMARY KEY,
+                        clientId INTEGER NOT NULL REFERENCES clients(id),
+                        date TEXT,
+                        tabularInput1 TEXT,
+                        tabularInput2 TEXT,
+                        tabularInput3 TEXT,
+                        tabularInput4 TEXT,
+                        tabularInput5 TEXT,
+                        tabularInput6 TEXT,
+                        tabularInput7 TEXT,
+                        tabularInput8 TEXT,
+                        tabularInput9 TEXT,
+                        tabularInput10 TEXT,
+                        tabularInput11 TEXT
+                      )
+                    `, (err5) => {
+                      if (err5) {
+                        return reject(err5);
                       }
                       return resolve();
                     });

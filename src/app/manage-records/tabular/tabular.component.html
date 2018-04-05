@@ -1,96 +1,45 @@
 <nav class="navbar navbar-light bg-success-light">Tabular</nav>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">TabularInput1</th>
-      <th scope="col">TabularInput2</th>
-      <th scope="col">TabularInput3</th>
-      <th scope="col">TabularInput4</th>
-      <th scope="col">TabularInput5</th>
-      <th scope="col">TabularInput6</th>
-      <th scope="col">TabularInput7</th>
-      <th scope="col">TabularInput8</th>
-      <th scope="col">TabularInput9</th>
-      <th scope="col">TabularInput10</th>
-      <th scope="col">TabularInput11</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="input-group-sm"><input type="date" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-      <td class="input-group-sm"><input type="text" class="form-control"></td>
-    </tr>
-    <tr>
-        <td class="input-group-sm"><input type="date" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-        <td class="input-group-sm"><input type="text" class="form-control"></td>
-      </tr>
-      <tr>
-          <td class="input-group-sm"><input type="date" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-          <td class="input-group-sm"><input type="text" class="form-control"></td>
-        </tr>
-        <tr>
-            <td class="input-group-sm"><input type="date" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-            <td class="input-group-sm"><input type="text" class="form-control"></td>
-          </tr>
-          <tr>
-              <td class="input-group-sm"><input type="date" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-              <td class="input-group-sm"><input type="text" class="form-control"></td>
-            </tr>
 
-  </tbody>
-</table>
+<form [formGroup]="recordsForm">
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">TabularInput1</th>
+        <th scope="col">TabularInput2</th>
+        <th scope="col">TabularInput3</th>
+        <th scope="col">TabularInput4</th>
+        <th scope="col">TabularInput5</th>
+        <th scope="col">TabularInput6</th>
+        <th scope="col">TabularInput7</th>
+        <th scope="col">TabularInput8</th>
+        <th scope="col">TabularInput9</th>
+        <th scope="col">TabularInput10</th>
+        <th scope="col">TabularInput11</th>
+      </tr>
+    </thead>
+    <tbody formArrayName="records">
+      <tr *ngFor="let record of records.controls; let i=index" [formGroupName]="i">
+        <td class="input-group-sm"><input type="date" class="form-control" formControlName="date" (blur)="addNewRecord(record, i)"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput1"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput2"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput3"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput4"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput5"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput6"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput7"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput8"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput9"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput10"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput11"></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+</form>
 
 
 
