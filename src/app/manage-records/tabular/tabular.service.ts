@@ -88,7 +88,6 @@ export class TabularService {
 
   public updateFromModel(tabular: Tabular): Observable<void[]> {
     const observables: Observable<void>[] = [];
-    console.log(tabular.getPendingModifications());
     tabular.getPendingModifications().forEach((id) => {
       observables.push(this.updateSingle(tabular.getTabularData()[tabular.getTabularData().map((record => record.id)).indexOf(id)]));
     });

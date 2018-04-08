@@ -145,7 +145,6 @@ export class TabularComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         this.clearAllRecordsFromFormArray(this.records);
         this.clientData = data;
-        console.log(data);
         this.clientData.getTabularData().forEach((record) => {
           this.records.push(this.newEmptyRecord());
           this.records.at(this.records.length - 1).patchValue(record);
