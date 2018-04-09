@@ -4,11 +4,8 @@ import { Tabular, TTabular } from './tabular.model';
 import { ClientService } from '../../client.service';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/concat';
-
 
 import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/last';
 
 
 

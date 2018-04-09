@@ -1,5 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 
+.navbar-brand {
+  margin-left: 1rem;
+  user-select: none;
+  cursor: default;
+}
+
+.back-button {
+  font-size: 40px;
+  cursor: pointer;
+  outline: 0;
+}
 
 .bg-success {
   background-color: #6fb139 !important;

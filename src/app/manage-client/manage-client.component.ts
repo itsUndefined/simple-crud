@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Client } from '../client.model';
 import { ClientService } from '../client.service';
 import { Subscription } from 'rxjs/Subscription';
+import { ipcRenderer } from 'electron';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class ManageClientComponent implements OnInit, OnDestroy {
   constructor(public clientService: ClientService, private ngZone: NgZone) { }
 
   ngOnInit() {
+    this.clientService.selectedClient = null;
     this.fetchAllClients();
     this.form = new FormGroup({
       lastName: new FormControl(null, Validators.required),
@@ -43,10 +45,15 @@ export class ManageClientComponent implements OnInit, OnDestroy {
     }, (err) => {
       throw err;
     });
+
+    ipcRenderer.once('closing', () => {
+      ipcRenderer.send('readyToClose');
+    });
   }
 
   ngOnDestroy() {
     this.clientChanged.unsubscribe();
+    ipcRenderer.removeAllListeners('closing');
   }
 
   createClient() {

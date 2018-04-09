@@ -1,6 +1,5 @@
 export interface TTabular {
   id?: number;
-  clientId: number;
   date: Date;
   tabularInput1?: string;
   tabularInput2?: string;

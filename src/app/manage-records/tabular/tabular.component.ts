@@ -118,7 +118,6 @@ export class TabularComponent implements OnInit, OnDestroy {
   private newEmptyRecord(): FormGroup {
     return new FormGroup({
       id: new FormControl(null),
-      clientId: new FormControl(this.clientService.selectedClient),
       date: new FormControl(null),
       tabularInput1: new FormControl(null),
       tabularInput2: new FormControl(null),

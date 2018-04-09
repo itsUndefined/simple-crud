@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { DatabaseService } from './database.service';
-import { Injectable } from '@angular/core';
+import { Injectable, ApplicationRef } from '@angular/core';
 import { Client, TClient, Details } from './client.model';
 import { Subject } from 'rxjs/Subject';
 
@@ -12,14 +12,17 @@ export class ClientService {
   // Sends an event when the client is changed and also returns the previous client for saving.
   public onSelectedClient: Subject<Client> = new Subject();
 
-  constructor(private databaseService: DatabaseService) { }
+  constructor(private databaseService: DatabaseService, private applicationRef: ApplicationRef) { }
 
   public setSelectedClient(client: Client): void {
     let previousClient = null;
     if (this.selectedClient) {
       previousClient = Object.assign({}, this.selectedClient);
     }
+    this.selectedClient = null;
+    this.applicationRef.tick();
     this.selectedClient = client;
+
     this.onSelectedClient.next(previousClient);
   }
 
@@ -122,7 +125,7 @@ export class ClientService {
   public delete(client: Client): Observable<void> {
     return new Observable(subscriber => {
       this.databaseService.DB.serialize(() => {
-        this.databaseService.DB.run('DELETE FROM details WHERE client_id = ?', client.id, (err) => {
+        this.databaseService.DB.run('DELETE FROM details WHERE clientId = ?', client.id, (err) => {
           if (err) {
             subscriber.error(err);
             return subscriber.complete();
