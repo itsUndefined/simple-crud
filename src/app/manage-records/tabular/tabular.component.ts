@@ -5,6 +5,7 @@ import { Tabular } from './tabular.model';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs/Subscription';
 import { ipcRenderer } from 'electron';
+import { Client } from '../../client.model';
 
 @Component({
   selector: 'app-tabular',
@@ -41,7 +42,7 @@ export class TabularComponent implements OnInit, OnDestroy {
     // watch for changes in selected client
     this.clientChanged = this.clientService.onSelectedClient.subscribe((prevClient) => {
       if (prevClient) {
-        this.saveAllRecords();
+        this.saveAllRecords(prevClient);
       }
       if (this.clientService.selectedClient) {
         this.fetchAllRecords();
@@ -52,7 +53,7 @@ export class TabularComponent implements OnInit, OnDestroy {
     });
 
     ipcRenderer.once('closing', () => {
-      this.saveAllRecords(() => {
+      this.saveAllRecords(this.clientService.selectedClient, () => {
         ipcRenderer.send('readyToClose');
       });
     });
@@ -78,13 +79,13 @@ export class TabularComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.saveAllRecords();
+    this.saveAllRecords(this.clientService.selectedClient);
     this.clientChanged.unsubscribe();
     ipcRenderer.removeAllListeners('closing');
   }
 
-  private saveAllRecords(callback?: () => void) {
-    if (this.clientService.selectedClient) {
+  private saveAllRecords(client: Client, callback?: () => void) {
+    if (client) {
       for (let i = 0; i < this.records.length; i++) {
         const control = this.records.controls[i];
         if (control.dirty) {
@@ -102,6 +103,8 @@ export class TabularComponent implements OnInit, OnDestroy {
           callback();
         }
       });
+    } else if (callback) {
+      callback();
     }
   }
 

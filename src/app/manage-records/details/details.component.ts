@@ -76,6 +76,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
       }, (err) => {
         throw err;
       });
+    } else if (callback) {
+      callback();
     }
   }
 

@@ -64,7 +64,7 @@ export class ClientService {
   public writeDetails(client: Client): Observable<void> {
     return new Observable(subscriber => {
       this.databaseService.DB.serialize(() => {
-        this.databaseService.DB.run('UPDATE clients SET identification = ?', client.identification, (err) => {
+        this.databaseService.DB.run('UPDATE clients SET identification = ? WHERE id = ?', [client.identification, client.id], (err) => {
           if (err) {
             subscriber.error(err);
             return subscriber.complete();

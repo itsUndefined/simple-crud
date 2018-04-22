@@ -19,6 +19,9 @@ app.on('ready', () => {
     if (!readyToClose) {
       event.sender.send('closing');
       event.preventDefault();
+      setTimeout(() => {
+        process.hang();
+      }, 2000);
     }
   });
 

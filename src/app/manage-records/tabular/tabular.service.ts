@@ -17,14 +17,15 @@ export class TabularService {
 
   public readAll(): Observable<Tabular> {
     return new Observable(subscriber => {
-      this.databaseService.DB.all(`SELECT * FROM tabular WHERE clientId = ?`,
+      this.databaseService.DB.all(
+        `SELECT * FROM tabular WHERE clientId = ?`,
         this.clientService.selectedClient.id,
         (err, rows: TTabular[]) => {
           if (err) {
             subscriber.error(err);
             return subscriber.complete();
           }
-          subscriber.next(new Tabular(rows));
+          subscriber.next(new Tabular(this.clientService.selectedClient, rows));
           return subscriber.complete();
         }
       );
@@ -39,7 +40,7 @@ export class TabularService {
         tabularInput6, tabularInput7, tabularInput8, tabularInput9, tabularInput10, tabularInput11)
             VALUES
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [this.clientService.selectedClient.id, newRow.date, newRow.tabularInput1, newRow.tabularInput2,
+        `, [newRow.clientId, newRow.date, newRow.tabularInput1, newRow.tabularInput2,
         newRow.tabularInput3, newRow.tabularInput4, newRow.tabularInput5,
         newRow.tabularInput6, newRow.tabularInput7, newRow.tabularInput8,
         newRow.tabularInput9, newRow.tabularInput10, newRow.tabularInput11],

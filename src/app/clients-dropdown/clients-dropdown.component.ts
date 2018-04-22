@@ -32,17 +32,13 @@ export class ClientsDropdownComponent implements OnChanges {
         dropdown.close();
         event.preventDefault(); // Prevent reopening the dropdown if the enter was sent on the dropdown button
       }
-    }
-
-    if (event.keyCode === 40) { // ON DOWN
+    } else if (event.keyCode === 40) { // ON DOWN
       if (!this.focusedClient) {
         this.focusedClient = this.clientsOnDropdown[0];
       } else if (this.clientsOnDropdown.indexOf(this.focusedClient) < this.clientsOnDropdown.length - 1) {
         this.focusedClient = this.clientsOnDropdown[this.clientsOnDropdown.indexOf(this.focusedClient) + 1];
       }
-    }
-
-    if (event.keyCode === 38) { // ON UP
+    } else if (event.keyCode === 38) { // ON UP
       if (!this.focusedClient) {
         this.focusedClient = this.clientsOnDropdown[0];
       } else if (this.clientsOnDropdown.indexOf(this.focusedClient) > 0) {
