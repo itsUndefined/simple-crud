@@ -40,7 +40,7 @@ export class TabularService {
         (clientId, date, tabularInput1, tabularInput2)
             VALUES
         (?, ?, ?, ?)
-        `, [newRow.clientId, newRow.date, newRow.tabularInput1, newRow.tabularInput2],
+        `, [newRow.clientId, newRow.date.getTime(), newRow.tabularInput1, newRow.tabularInput2],
         function (err) {
           if (err) {
             subscriber.error(err);
@@ -60,7 +60,7 @@ export class TabularService {
         `UPDATE tabularWithAttachments SET
         date = ?, tabularInput1 = ?, tabularInput2 = ?
         WHERE id = ?
-        `, [existingRow.date, existingRow.tabularInput1, existingRow.tabularInput2, existingRow.id],
+        `, [existingRow.date.getTime(), existingRow.tabularInput1, existingRow.tabularInput2, existingRow.id],
         (err) => {
           if (err) {
             subscriber.error(err);

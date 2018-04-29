@@ -40,7 +40,7 @@ export class TabularService {
         tabularInput6, tabularInput7, tabularInput8, tabularInput9, tabularInput10, tabularInput11)
             VALUES
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [newRow.clientId, newRow.date, newRow.tabularInput1, newRow.tabularInput2,
+        `, [newRow.clientId, newRow.date.getTime(), newRow.tabularInput1, newRow.tabularInput2,
         newRow.tabularInput3, newRow.tabularInput4, newRow.tabularInput5,
         newRow.tabularInput6, newRow.tabularInput7, newRow.tabularInput8,
         newRow.tabularInput9, newRow.tabularInput10, newRow.tabularInput11],
@@ -67,7 +67,7 @@ export class TabularService {
         tabularInput8 = ?, tabularInput9 = ?,
         tabularInput10 = ?, tabularInput11 = ?
         WHERE id = ?
-        `, [existingRow.date, existingRow.tabularInput1, existingRow.tabularInput2,
+        `, [existingRow.date.getTime(), existingRow.tabularInput1, existingRow.tabularInput2,
         existingRow.tabularInput3, existingRow.tabularInput4, existingRow.tabularInput5,
         existingRow.tabularInput6, existingRow.tabularInput7, existingRow.tabularInput8,
         existingRow.tabularInput9, existingRow.tabularInput10, existingRow.tabularInput11,

@@ -72,7 +72,16 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
   addNewRecord(record: FormGroup, index: number) {
     if (!record.get('id').value) { // Check that the record is new
       if (record.get('date').value) { // and the date was not left empty
-        this.records.push(this.newEmptyRecord());
+        let foundEmpty = false;
+        for (let i = 0; i < this.records.length; i++) {
+          if (this.isObjectEmpty(this.records.at(i).value)) {
+            foundEmpty = true;
+            break;
+          }
+        }
+        if (!foundEmpty) {
+          this.records.push(this.newEmptyRecord());
+        }
       } else if (this.isObjectEmpty(record.value) && index !== this.records.length - 1) { // else if the whole record is empty delete it
         this.records.removeAt(index);
       }
@@ -173,6 +182,7 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
         this.clientData.getTabularData().forEach((record) => {
           this.records.push(this.newEmptyRecord());
           this.records.at(this.records.length - 1).patchValue(record);
+          this.records.at(this.records.length - 1).get('date').setValue(record.date.toISOString().split('T')[0]);
           for (let i = 0; i < record.attachmentInput1.length; i++) {
             (<FormArray>this.records.at(this.records.length - 1).get(['attachmentInput1']))
             .push(new FormGroup({
