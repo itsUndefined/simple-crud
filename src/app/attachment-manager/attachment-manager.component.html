@@ -1,0 +1,53 @@
+<!-- <div class="input-group-sm" (click)="openSelectAttachmentsDialog()">
+    <input type="button" class="form-control" [disabled]="formArray.disabled">
+</div> -->
+
+<div class="input-group input-group-sm">
+  <input [ngStyle]="{cursor: formArray.length ? 'pointer' : 'default'}" type="button" class="form-control" [value]="formArray.disabled ? '' : 'Available images: ' + formArray.length" [disabled]="formArray.disabled" (click)="openImageViewer()">
+  <div class="input-group-append">
+    <button class="btn btn-outline-success" type="button" (click)="openSelectAttachmentsDialog()" [disabled]="formArray.disabled">Add File(s)</button>
+  </div>
+</div>
+
+
+<div *ngIf="imageViewerOpen" class="fileManager" (click)="closeImageViewer()">
+  <i
+    class="fa fa-arrow-circle-o-left fa-4x"
+    (click)="previousImage($event)"
+    [ngStyle]="{
+      cursor: selectedImage ? 'pointer' : 'not-allowed',
+      color: selectedImage ? 'black' : 'gray'
+    }">
+  </i>
+
+  <ng-template [ngIf]="dualImages">
+      <img
+        (click)="onImageLeftClick(selectedImage)"
+        (contextmenu)="onImageRightClick(selectedImage)"
+        class="leftImage"
+        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/patients-database/' + formArray.controls[selectedImage].value.fileUri">
+      <img
+        (click)="onImageLeftClick(selectedImage + 1)"
+        (contextmenu)="onImageRightClick(selectedImage + 1)"
+        class="rightImage"
+        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/patients-database/' + formArray.controls[selectedImage + 1].value.fileUri">
+  </ng-template>
+
+  <ng-template [ngIf]="!dualImages">
+    <img
+      (click)="$event.stopPropagation()"
+      (contextmenu)="onImageRightClick(selectedImage)"
+      class="singleImage"
+      [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/patients-database/' + formArray.controls[selectedImage].value.fileUri">
+  </ng-template>
+
+  <i
+    class="fa fa-arrow-circle-o-right fa-4x"
+    (click)="nextImage($event)"
+    [ngStyle]="{
+      cursor: selectedImage !== formArray.length - 1 && !dualImages || selectedImage !== formArray.length - 2 && dualImages ? 'pointer' : 'not-allowed',
+      color: selectedImage !== formArray.length - 1 && !dualImages || selectedImage !== formArray.length - 2 && dualImages ? 'black' : 'gray'
+    }">
+  </i>
+</div>
+

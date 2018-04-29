@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, WebPreferences } from 'electron';
 
 let win: BrowserWindow;
 
@@ -9,7 +9,10 @@ app.on('ready', () => {
     x: 0,
     y: 0,
     width: 800,
-    height: 800
+    height: 800,
+    webPreferences: {
+      webSecurity: false
+    }
   });
 
 

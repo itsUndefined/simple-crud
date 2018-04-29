@@ -13,7 +13,7 @@ import 'rxjs/add/observable/forkJoin';
 @Injectable()
 export class TabularService {
 
-  constructor(private databaseService: DatabaseService, private clientService: ClientService) { }
+  constructor(protected databaseService: DatabaseService, private clientService: ClientService) { }
 
   public readAll(): Observable<Tabular> {
     return new Observable(subscriber => {

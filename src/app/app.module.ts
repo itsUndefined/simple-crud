@@ -10,6 +10,7 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ManageClientComponent } from './manage-client/manage-client.component';
 import { ManageRecordsComponent } from './manage-records/manage-records.component';
 import { ClientsDropdownComponent } from './clients-dropdown/clients-dropdown.component';
+import { AttachmentManagerComponent } from './attachment-manager/attachment-manager.component';
 import { DetailsComponent } from './manage-records/details/details.component';
 import { NonTabularComponent } from './manage-records/non-tabular/non-tabular.component';
 import { TabularComponent } from './manage-records/tabular/tabular.component';
@@ -20,6 +21,7 @@ import { ClientService } from './client.service';
 
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { TabularService } from './manage-records/tabular/tabular.service';
+import { TabularWithAttachmentsService } from './manage-records/tabular-with-attachments/tabular-with-attachments.service';
 
 
 const routes: Routes = [
@@ -43,7 +45,8 @@ const routes: Routes = [
     DetailsComponent,
     NonTabularComponent,
     TabularComponent,
-    TabularWithAttachmentsComponent
+    TabularWithAttachmentsComponent,
+    AttachmentManagerComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgbModule.forRoot()
   ],
-  providers: [DatabaseService, ClientService, TabularService, NgbDropdown],
+  providers: [DatabaseService, ClientService, TabularService, NgbDropdown, TabularWithAttachmentsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

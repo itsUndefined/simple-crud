@@ -50,7 +50,7 @@ export class ClientsDropdownComponent implements OnChanges {
   generateFoundClients(event: KeyboardEvent, dropdown: NgbDropdown) {
     if (event.keyCode !== 13 && event.keyCode !== 38 && event.keyCode !== 40) {
       this.clientsOnDropdown = this.clients.filter((client) => {
-        return client.fullName.indexOf((<HTMLInputElement>event.target).value) === 0;
+        return client.fullName.toUpperCase().indexOf((<HTMLInputElement>event.target).value.toUpperCase()) === 0;
       });
       dropdown.open();
     }

@@ -1,3 +1,26 @@
-<p>
-  tabular-with-attachments works!
-</p>
+<nav class="navbar navbar-light bg-success-light">Tabular</nav>
+
+<form [formGroup]="recordsForm">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">TabularInput1</th>
+        <th scope="col">TabularInput2</th>
+        <th scope="col">AttachmentInput1</th>
+        <th scope="col">AttachmentInput2</th>
+      </tr>
+    </thead>
+    <tbody formArrayName="records">
+      <tr *ngFor="let record of records.controls; let i=index" [formGroupName]="i">
+        <td class="input-group-sm"><input type="date" class="form-control" formControlName="date" (blur)="addNewRecord(record, i)" #poutses></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput1"></td>
+        <td class="input-group-sm"><input type="text" class="form-control" formControlName="tabularInput2"></td>
+        <td style="width: 20%"><app-attachment-manager [formArray]="record.get('attachmentInput1')"></app-attachment-manager></td>
+        <td style="width: 20%"><app-attachment-manager [formArray]="record.get('attachmentInput2')"></app-attachment-manager></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<br>

@@ -3,6 +3,8 @@ import { DatabaseService } from './database.service';
 import { Injectable, ApplicationRef } from '@angular/core';
 import { Client, TClient, Details } from './client.model';
 import { Subject } from 'rxjs/Subject';
+import { mkdir } from 'fs';
+import { appPath } from './constants';
 
 
 @Injectable()
@@ -97,13 +99,19 @@ export class ClientService {
   public create(client: Client): Observable<void> {
     return new Observable(subscriber => {
       this.databaseService.DB.run('INSERT INTO clients (lastName, firstName, dateOfBirth, identification) VALUES (?, ? ,? ,?)',
-      [client.lastName, client.firstName, client.dateOfBirth, client.identification], (err) => {
+      [client.lastName, client.firstName, client.dateOfBirth, client.identification], function (err) {
         if (err) {
           subscriber.error(err);
           return subscriber.complete();
         }
-        subscriber.next();
-        return subscriber.complete();
+        mkdir(`${appPath}\\data\\${this.lastID}`, (err1) => {
+          if (err1) {
+            subscriber.error(err1);
+            return subscriber.complete();
+          }
+          subscriber.next();
+          return subscriber.complete();
+        });
       });
     });
   }
@@ -122,6 +130,8 @@ export class ClientService {
     });
   }
 
+
+  // TODO: DELETE ALL USER DATA + FOLDERS
   public delete(client: Client): Observable<void> {
     return new Observable(subscriber => {
       this.databaseService.DB.serialize(() => {
