@@ -3,7 +3,7 @@ import { TabularWithAttachmentsService } from './tabular-with-attachments.servic
 import { ClientService } from '../../client.service';
 import { TabularWithAttachments, Attachment } from './tabular-with-attachments.model';
 import { FormGroup, FormArray, FormControl, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
 
 @Component({

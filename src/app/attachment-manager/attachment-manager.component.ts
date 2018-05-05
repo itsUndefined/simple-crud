@@ -2,7 +2,7 @@ import { Component, OnInit, Input, NgZone, HostListener } from '@angular/core';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { TabularWithAttachmentsService } from '../manage-records/tabular-with-attachments/tabular-with-attachments.service';
 import { remote } from 'electron';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-attachment-manager',

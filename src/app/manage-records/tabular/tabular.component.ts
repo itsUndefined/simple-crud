@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { TabularService } from './tabular.service';
 import { Tabular } from './tabular.model';
 import { ClientService } from '../../client.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
 import { Client } from '../../client.model';
 

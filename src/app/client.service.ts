@@ -1,8 +1,7 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject } from 'rxjs';
 import { DatabaseService } from './database.service';
 import { Injectable, ApplicationRef } from '@angular/core';
 import { Client, TClient, Details } from './client.model';
-import { Subject } from 'rxjs/Subject';
 import { mkdir } from 'fs';
 import { appPath } from './constants';
 

@@ -5,13 +5,10 @@ import { ClientService } from '../../client.service';
 import { appPath } from '../../constants';
 import { TabularWithAttachments, Attachment, TTabularWithAttachments } from './tabular-with-attachments.model';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject, concat, forkJoin } from 'rxjs';
 
 import { readFile, writeFile, readdir, unlink } from 'fs';
 import { remote } from 'electron';
-
-import 'rxjs/add/observable/concat';
-import { Subject } from 'rxjs/Subject';
 import { join } from 'path';
 
 
@@ -35,7 +32,9 @@ export class TabularWithAttachmentsService extends TabularService {
   }
 
   public openImageContextMenu() {
-    this.imageContextMenu.popup(remote.getCurrentWindow());
+    this.imageContextMenu.popup({
+      window: remote.getCurrentWindow()
+    });
   }
 
   public readAll(): Observable<TabularWithAttachments> {
@@ -128,7 +127,7 @@ export class TabularWithAttachmentsService extends TabularService {
             fileUri: attachment.fileUri
           }));
         });
-        Observable.forkJoin(...observables).subscribe((value) => {
+        forkJoin(observables).subscribe((value) => {
           subscriber.next(value);
         }, (err) => {
           subscriber.error(err);
@@ -151,7 +150,7 @@ export class TabularWithAttachmentsService extends TabularService {
     addedAttachments.forEach(attachment => {
       observables.push(this.addAttachmentToDatabase(attachment));
     });
-    return Observable.forkJoin(...observables);
+    return forkJoin(observables);
   }
 
   public updateFromModel(tabularWithAttachments: TabularWithAttachments): Observable<void[][]> {
@@ -176,7 +175,7 @@ export class TabularWithAttachmentsService extends TabularService {
         observables.push(this.createSingle(record));
       }
     });
-    return Observable.forkJoin(...observables);
+    return forkJoin(observables);
   }
 
 
@@ -209,7 +208,7 @@ export class TabularWithAttachmentsService extends TabularService {
         });
       }));
     });
-    return Observable.concat(...observables);
+    return concat(...observables);
   }
 
   // TODO: Make a smart algorithm to avoid duplicates. For now nothing is deleted.

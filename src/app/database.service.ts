@@ -105,7 +105,12 @@ export class DatabaseService {
                       if (err7) {
                         return reject(err);
                       }
-                      return resolve();
+                      this.DB.run(`PRAGMA foreign_keys = ON`, (err8) => {
+                        if (err8) {
+                          return reject(err8);
+                        }
+                        return resolve();
+                      });
                     });
                   });
                 }
@@ -115,7 +120,12 @@ export class DatabaseService {
             return reject(err);
           }
         } else {
-          return resolve();
+          this.DB.run(`PRAGMA foreign_keys = ON`, (err1) => {
+            if (err1) {
+              return reject(err1);
+            }
+            return resolve();
+          });
         }
       });
     });
