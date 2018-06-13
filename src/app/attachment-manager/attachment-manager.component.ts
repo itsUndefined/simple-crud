@@ -41,18 +41,20 @@ export class AttachmentManagerComponent implements OnInit {
             this.formArray.controls[this.indexOfImageThatAccessedContextMenu].value
           ).subscribe(() => {
             this.ngZone.run(() => {
-              // TODO: Anything special for singleImages?
-              if (this.formArray.length === 2) {
-                this.dualImages = false;
-              } else if (this.formArray.length === 1) {
-                this.closeImageViewer();
-              } else if (
-                this.indexOfImageThatAccessedContextMenu - this.selectedImage === 0 &&
-                this.indexOfImageThatAccessedContextMenu !== 0 ||
-                this.indexOfImageThatAccessedContextMenu === this.formArray.length - 1
-              ) { // If the image to the left or the last image was deleted.
-                this.selectedImage--;
-              }
+                if (this.formArray.length === 2) {
+                  if (!this.dualImages) {
+                    this.selectedImage = 0;
+                  }
+                  this.dualImages = false;
+                } else if (this.formArray.length === 1) {
+                  this.closeImageViewer();
+                } else if (
+                  (this.indexOfImageThatAccessedContextMenu - this.selectedImage === 0 &&
+                  this.indexOfImageThatAccessedContextMenu !== 0 && this.dualImages ||
+                  this.indexOfImageThatAccessedContextMenu === this.formArray.length - 1)
+                ) {
+                  this.selectedImage--;
+                }
               this.formArray.removeAt(this.indexOfImageThatAccessedContextMenu);
             });
           }, (err) => {
@@ -69,6 +71,7 @@ export class AttachmentManagerComponent implements OnInit {
   }
 
   nextImage(event: MouseEvent) {
+    this.singleImageLocked = false;
     if (
       this.selectedImage !== this.formArray.length - 1 && !this.dualImages ||
       this.selectedImage !== this.formArray.length - 2 && this.dualImages
@@ -80,6 +83,7 @@ export class AttachmentManagerComponent implements OnInit {
   }
 
   previousImage(event: MouseEvent) {
+    this.singleImageLocked = false;
     if (this.selectedImage !== 0) {
       this.selectedImage--;
       this.checkIfImageLayoutChanged();
@@ -116,7 +120,9 @@ export class AttachmentManagerComponent implements OnInit {
   }
 
   private checkIfImageLayoutChanged() {
-    this.dualImages = window.innerWidth > 1300 && this.selectedImage < this.formArray.length - 1;
+    if (!this.singleImageLocked) {
+      this.dualImages = window.innerWidth > 1300 && this.selectedImage < this.formArray.length - 1;
+    }
   }
 
 }

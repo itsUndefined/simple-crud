@@ -40,7 +40,7 @@
     <div class="text-center">
       <div style="margin-bottom: 16px;">
         <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{clientService.selectedClient ? 'Edit Client' : 'Create Client'}}</button>
-        <button type="button" class="btn btn-info" (click)="isSearchFormDisplayed = !isSearchFormDisplayed">Find Client</button>
+        <button type="button" class="btn btn-info" (click)="clearForm()">{{clientService.selectedClient ? 'Cancel Edit' : 'Clear Form'}}</button>
       </div>
 
       <div>
@@ -50,23 +50,19 @@
 
   </form>
 
-    <ng-container *ngIf="isSearchFormDisplayed">
+  <br>
 
-      <br>
+  <div class="text-center">
+      <h2>Select client for editing</h2>
+  </div>
 
-      <div class="text-center">
-          <h2>Select client for editing</h2>
-      </div>
+  <br>
 
-      <br>
-
-      <div class="row">
-        <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Full Name</label>
-        <div class="col-sm-8 col-md-9 col-lg-10">
-          <app-clients-dropdown [clients]="clients"></app-clients-dropdown>
-        </div>
-      </div>
-    </ng-container>
-
+  <div class="row">
+    <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Full Name</label>
+    <div class="col-sm-8 col-md-9 col-lg-10">
+      <app-clients-dropdown [clients]="clients"></app-clients-dropdown>
+    </div>
+  </div>
 
 </div>

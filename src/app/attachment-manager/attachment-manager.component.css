@@ -25,6 +25,7 @@
 }
 
 .leftImage {
+  cursor: pointer;
   user-select: none;
   position: absolute;
   left: 0;
@@ -35,6 +36,7 @@
 }
 
 .rightImage {
+  cursor: pointer;
   position: absolute;
   right: 0;
   margin-right: 4.5%;

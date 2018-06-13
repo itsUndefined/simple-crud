@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('patients-database App', () => {
+describe('simple-crud App', () => {
   let page: AppPage;
 
   beforeEach(() => {

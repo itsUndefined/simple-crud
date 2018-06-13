@@ -2,6 +2,6 @@
   <input type="text" class="form-control" id="inputSelectClient" (keyup)="generateFoundClients($event, myDrop)" [value]="clientService.selectedClient?.fullName" (click)="$event.stopPropagation()" placeholder="Patient's Full Name">
   <button type="button" class="btn btn-default dropdown-toggle" ngbDropdownToggle></button>
   <div class="dropdown-menu dropdown-menu-right scrollable-menu" ngbDropdownMenu>
-    <button class="dropdown-item" *ngFor="let client of clientsOnDropdown" [ngStyle]="{ outline: focusedClient?.id == client.id ? '5px auto var(--blue)' : 0 }" (click)="selectClient(client)">{{client.fullName}}</button>
+    <button class="dropdown-item" *ngFor="let client of clientsOnDropdown" [ngStyle]="{ backgroundColor: focusedClient?.id == client.id ? 'cyan' : 'transparent' }" (click)="selectClient(client)">{{client.fullName}}</button>
   </div>
 </div>

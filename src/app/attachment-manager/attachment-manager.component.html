@@ -25,12 +25,12 @@
         (click)="onImageLeftClick(selectedImage)"
         (contextmenu)="onImageRightClick(selectedImage)"
         class="leftImage"
-        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/patients-database/' + formArray.controls[selectedImage].value.fileUri">
+        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + formArray.controls[selectedImage].value.fileUri">
       <img
         (click)="onImageLeftClick(selectedImage + 1)"
         (contextmenu)="onImageRightClick(selectedImage + 1)"
         class="rightImage"
-        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/patients-database/' + formArray.controls[selectedImage + 1].value.fileUri">
+        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + formArray.controls[selectedImage + 1].value.fileUri">
   </ng-template>
 
   <ng-template [ngIf]="!dualImages">
@@ -38,7 +38,7 @@
       (click)="$event.stopPropagation()"
       (contextmenu)="onImageRightClick(selectedImage)"
       class="singleImage"
-      [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/patients-database/' + formArray.controls[selectedImage].value.fileUri">
+      [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + formArray.controls[selectedImage].value.fileUri">
   </ng-template>
 
   <i

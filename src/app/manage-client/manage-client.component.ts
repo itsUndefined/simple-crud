@@ -16,8 +16,6 @@ export class ManageClientComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
-  isSearchFormDisplayed = false;
-
   clients: Client[] = [];
 
   clientChanged: Subscription;
@@ -25,6 +23,7 @@ export class ManageClientComponent implements OnInit, OnDestroy {
   constructor(public clientService: ClientService, private ngZone: NgZone) { }
 
   ngOnInit() {
+    // Access selected client directly instead of using setSelectedClient because we are already running current tick
     this.clientService.selectedClient = null;
     this.fetchAllClients();
     this.form = new FormGroup({
@@ -92,6 +91,13 @@ export class ManageClientComponent implements OnInit, OnDestroy {
     }, (err) => {
       throw err;
     });
+  }
+
+  clearForm() {
+    if (this.clientService.selectedClient) {
+      this.clientService.setSelectedClient(null);
+    }
+    this.form.reset();
   }
 
   private fetchAllClients() {

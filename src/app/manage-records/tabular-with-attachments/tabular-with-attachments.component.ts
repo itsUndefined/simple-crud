@@ -13,8 +13,6 @@ import { ipcRenderer } from 'electron';
 })
 export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
 
-  @ViewChild('poutses') karkinos: ElementRef;
-
   recordsForm: FormGroup;
 
   clientData: TabularWithAttachments;

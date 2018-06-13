@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "patients-database": {
+    "simple-crud": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -49,18 +49,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "patients-database:build"
+            "browserTarget": "simple-crud:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "patients-database:build:production"
+              "browserTarget": "simple-crud:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "patients-database:build"
+            "browserTarget": "simple-crud:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "patients-database-e2e": {
+    "simple-crud-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -104,7 +104,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "patients-database:serve"
+            "devServerTarget": "simple-crud:serve"
           }
         },
         "lint": {
@@ -121,7 +121,7 @@
       }
     }
   },
-  "defaultProject": "patients-database",
+  "defaultProject": "simple-crud",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
