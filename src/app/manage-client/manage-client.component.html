@@ -31,16 +31,25 @@
     </div>
 
     <div class="form-group row">
-        <label for="inputIdentification" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Identification</label>
-        <div class="col-sm-8 col-md-9 col-lg-10">
-          <input type="number" class="form-control" id="inputIdentification" formControlName="identification">
+      <label for="inputGender" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Gender</label>
+      <div class="col-sm-8 col-md-9 col-lg-10">
+        <div class="form-check-inline">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" value="male" formControlName="gender">Male
+          </label>
         </div>
+        <div class="form-check-inline">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" value="female" formControlName="gender">Female
+          </label>
+        </div>
+      </div>
     </div>
 
     <div class="text-center">
       <div style="margin-bottom: 16px;">
-        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{clientService.selectedClient ? 'Edit Client' : 'Create Client'}}</button>
-        <button type="button" class="btn btn-info" (click)="clearForm()">{{clientService.selectedClient ? 'Cancel Edit' : 'Clear Form'}}</button>
+        <button type="submit" style="margin-right: 10px;" class="btn btn-success" [disabled]="form.invalid">{{clientService.selectedClient ? 'Edit Client' : 'Create Client'}}</button>
+        <button type="button" style="margin-left: 10px;" class="btn btn-info" (click)="clearForm()">{{clientService.selectedClient ? 'Cancel Edit' : 'Clear Form'}}</button>
       </div>
 
       <div>
@@ -50,13 +59,11 @@
 
   </form>
 
-  <br>
+  <br *ngIf="clientService.selectedClient">
 
   <div class="text-center">
       <h2>Select client for editing</h2>
   </div>
-
-  <br>
 
   <div class="row">
     <label for="inputSelectClient" class="col-sm-4 col-md-3 col-lg-2 col-form-label">Full Name</label>

@@ -1,4 +1,4 @@
-import { Client } from '../../client.model';
+import { Client } from '../../models/client';
 
 export interface TTabular {
   id?: number;

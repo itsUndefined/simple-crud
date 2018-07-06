@@ -5,7 +5,7 @@ import { Tabular } from './tabular.model';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
-import { Client } from '../../client.model';
+import { Client } from '../../models/client';
 
 @Component({
   selector: 'app-tabular',

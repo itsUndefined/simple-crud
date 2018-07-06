@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Client } from '../client.model';
+import { Client } from '../models/client';
 import { ClientService } from '../client.service';
 import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
@@ -30,16 +30,13 @@ export class ManageClientComponent implements OnInit, OnDestroy {
       lastName: new FormControl(null, Validators.required),
       firstName: new FormControl(null, Validators.required),
       dateOfBirth: new FormControl(null),
-      identification: new FormControl(null)
+      gender: new FormControl(null, [Validators.required, Validators.pattern(/^male$|^female$/)])
     });
 
     // Listen for client change from service(dropdown)
     this.clientChanged = this.clientService.onSelectedClient.subscribe(() => {
       if (this.clientService.selectedClient) {
-        const formValues = Object.assign({}, this.clientService.selectedClient);
-        delete formValues.id;
-        delete formValues.fullName;
-        this.form.setValue(formValues);
+        this.form.patchValue(this.clientService.selectedClient.dataValues);
       }
     }, (err) => {
       throw err;
@@ -57,10 +54,9 @@ export class ManageClientComponent implements OnInit, OnDestroy {
 
   createClient() {
     if (this.form.valid) {
-      const client = new Client(this.form.value);
       if (this.clientService.selectedClient) { // edit user
-        client.id = this.clientService.selectedClient.id;
-        this.clientService.update(client).subscribe(() => {
+        this.clientService.selectedClient.setAttributes(this.form.value);
+        this.clientService.update(this.clientService.selectedClient).subscribe(() => {
           this.form.reset();
           this.ngZone.run(() => {
             this.clientService.setSelectedClient(null);
@@ -70,6 +66,7 @@ export class ManageClientComponent implements OnInit, OnDestroy {
           throw err;
         });
       } else { // create user
+        const client = new Client(this.form.value);
         this.clientService.create(client).subscribe(() => {
           this.form.reset();
           this.fetchAllClients();

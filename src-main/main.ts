@@ -15,7 +15,6 @@ app.on('ready', () => {
     }
   });
 
-
   win.loadURL('http://localhost:4200');
 
   win.on('close', (event) => {

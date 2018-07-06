@@ -1,5 +1,5 @@
 import { TTabular, Tabular } from './tabular.model';
-import { Client } from '../../client.model';
+import { Client } from '../../models/client';
 
 
 export type TTabularWithAttachments = (TTabular & TAttachment);
