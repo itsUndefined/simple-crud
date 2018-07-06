@@ -1,6 +1,6 @@
 import { Model, Table, Column, AllowNull, Sequelize } from 'sequelize-typescript';
 
-@Table
+@Table({tableName: 'Clients', modelName: 'Clients'})
 export class Client extends Model<Client> {
 
   @AllowNull(false) @Column firstName: string;

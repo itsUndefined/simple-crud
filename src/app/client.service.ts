@@ -46,7 +46,13 @@ export class ClientService {
 
   public writeDetails(details: Details): Observable<void> {
     return from((async () => {
-      await details.save();
+      const data = await Details.findById(details.clientId);
+      if (!data) {
+        await details.save();
+        return;
+      }
+      data.setAttributes(details.dataValues);
+      data.save();
     })());
   }
 

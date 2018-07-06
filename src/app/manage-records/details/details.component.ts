@@ -68,8 +68,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   private saveClientData(client: Client, callback?: () => void ) {
     if (client) {
-      const details = new Details();
-      Object.assign(details, this.form.value); // Value also has identification but that's not a problem. MUST CHANGE
+      const details = new Details(this.form.value);
+      details.clientId = client.id;
       this.clientService.writeDetails(details).subscribe(() => {
         if (callback) { // callback is only used if there is a requirement to know when this is done.
           callback();
@@ -84,10 +84,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   private fetchClientData() {
     this.clientService.readSingleWithDetails().subscribe((details) => {
-      if (details) { // why if? what will happen to the client if it doesn't have any record on details
-
+      if (details) {
+        this.form.patchValue(details.dataValues);
       }
-      this.form.patchValue(details);
       this.form.enable();
     }, (err) => {
       throw err;
