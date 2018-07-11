@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, NgZone, HostListener } from '@angular/core';
-import { FormArray, FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { TabularWithAttachmentsService } from '../manage-records/tabular-with-attachments/tabular-with-attachments.service';
 import { remote } from 'electron';
 import { Subscription } from 'rxjs';
+import { Attachment } from '../models/attachment';
 
 @Component({
   selector: 'app-attachment-manager',
@@ -10,7 +11,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./attachment-manager.component.css']
 })
 export class AttachmentManagerComponent implements OnInit {
-  @Input() formArray: FormArray;
+
+  @Input() attachmentsControl: FormControl;
+  get attachments() {
+    return this.attachmentsControl.value as Attachment[];
+  }
   imageViewerOpen = false;
   selectedImage = 0;
   dualImages: boolean;
@@ -32,30 +37,30 @@ export class AttachmentManagerComponent implements OnInit {
   }
 
   openImageViewer() {
-    if (this.formArray.length) {
+    if (this.attachments.length) {
       this.checkIfImageLayoutChanged();
       this.imageViewerOpen = true;
       this.imageContextMenuItemSelected = this.tabularWithAttachmentsService.onImageContextMenuItemSelected.subscribe(option => {
         if (option === 'delete') { // TODO: Delete from filesystem too? How to avoid losing count of fileNames?
           this.tabularWithAttachmentsService.deleteAttachmentFromDatabase(
-            this.formArray.controls[this.indexOfImageThatAccessedContextMenu].value
+            this.attachments[this.indexOfImageThatAccessedContextMenu]
           ).subscribe(() => {
             this.ngZone.run(() => {
-                if (this.formArray.length === 2) {
-                  if (!this.dualImages) {
-                    this.selectedImage = 0;
-                  }
-                  this.dualImages = false;
-                } else if (this.formArray.length === 1) {
-                  this.closeImageViewer();
-                } else if (
-                  (this.indexOfImageThatAccessedContextMenu - this.selectedImage === 0 &&
-                  this.indexOfImageThatAccessedContextMenu !== 0 && this.dualImages ||
-                  this.indexOfImageThatAccessedContextMenu === this.formArray.length - 1)
-                ) {
-                  this.selectedImage--;
+              if (this.attachments.length === 2) {
+                if (!this.dualImages) {
+                  this.selectedImage = 0;
                 }
-              this.formArray.removeAt(this.indexOfImageThatAccessedContextMenu);
+                this.dualImages = false;
+              } else if (this.attachments.length === 1) {
+                this.closeImageViewer();
+              } else if (
+                (this.indexOfImageThatAccessedContextMenu - this.selectedImage === 0 &&
+                this.indexOfImageThatAccessedContextMenu !== 0 && this.dualImages ||
+                this.indexOfImageThatAccessedContextMenu === this.attachments.length - 1)
+              ) {
+                this.selectedImage--;
+              }
+              this.attachments.splice(this.indexOfImageThatAccessedContextMenu, 1);
             });
           }, (err) => {
             throw err;
@@ -73,8 +78,8 @@ export class AttachmentManagerComponent implements OnInit {
   nextImage(event: MouseEvent) {
     this.singleImageLocked = false;
     if (
-      this.selectedImage !== this.formArray.length - 1 && !this.dualImages ||
-      this.selectedImage !== this.formArray.length - 2 && this.dualImages
+      this.selectedImage !== this.attachments.length - 1 && !this.dualImages ||
+      this.selectedImage !== this.attachments.length - 2 && this.dualImages
     ) {
       this.selectedImage++;
       this.checkIfImageLayoutChanged();
@@ -111,8 +116,8 @@ export class AttachmentManagerComponent implements OnInit {
       }) || []
     ).subscribe((fileUri) => {
       this.ngZone.run(() => {
-        this.formArray.push(new FormGroup({id: new FormControl(null), fileUri: new FormControl(fileUri)}));
-        this.formArray.get([this.formArray.length - 1]).markAsDirty();
+        this.attachments.push(new Attachment({fileUri}));
+        this.attachmentsControl.markAsDirty();
       });
     }, (err) => {
       throw err;
@@ -121,7 +126,7 @@ export class AttachmentManagerComponent implements OnInit {
 
   private checkIfImageLayoutChanged() {
     if (!this.singleImageLocked) {
-      this.dualImages = window.innerWidth > 1300 && this.selectedImage < this.formArray.length - 1;
+      this.dualImages = window.innerWidth > 1300 && this.selectedImage < this.attachments.length - 1;
     }
   }
 

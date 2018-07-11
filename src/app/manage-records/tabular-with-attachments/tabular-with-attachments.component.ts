@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TabularWithAttachmentsService } from './tabular-with-attachments.service';
 import { ClientService } from '../../client.service';
-import { TabularWithAttachments, Attachment } from './tabular-with-attachments.model';
+import { TabularWithAttachments } from '../../models/tabular-with-attachments';
+import { Attachment } from '../../models/attachment';
 import { FormGroup, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
@@ -15,7 +16,7 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
 
   recordsForm: FormGroup;
 
-  clientData: TabularWithAttachments;
+  clientData: TabularWithAttachments[];
 
   clientChanged: Subscription;
 
@@ -86,45 +87,29 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private findNewAttachments(control: AbstractControl): Attachment[] {
-    const newAttachments: Attachment[] = [];
-    const attachmentFormArray = <FormArray>control.get(['attachmentInput1']);
-    if (attachmentFormArray.dirty) {
-      for (let i = 0; i < attachmentFormArray.length; i++) {
-        if (attachmentFormArray.get([i]).dirty) {
-          newAttachments.push({
-            recordId: control.value.id,
-            type: 'attachmentInput1',
-            fileUri: attachmentFormArray.get([i]).value.fileUri
-          });
-        }
-      }
-    }
-    const attachmentFormArray2 = <FormArray>control.get(['attachmentInput2']);
-    if (attachmentFormArray2.dirty) {
-      for (let i = 0; i < attachmentFormArray2.length; i++) {
-        if (attachmentFormArray2.get([i]).dirty) {
-          newAttachments.push({
-            recordId: control.value.id,
-            type: 'attachmentInput2',
-            fileUri: attachmentFormArray2.get([i]).value.fileUri
-          });
-        }
-      }
-    }
-    return newAttachments;
-  }
-
   private saveAllRecords(callback?: () => void) {
     if (this.clientService.selectedClient) {
       for (let i = 0; i < this.records.length; i++) {
         const control = this.records.controls[i];
         if (control.dirty) {
           if (control.value.id) {
-            this.clientData.modifyData(control.value, this.findNewAttachments(control));
+            this.clientData[this.clientData.map((record) => record.id).indexOf(control.value.id)].setAttributes(control.value);
           } else {
-            this.clientData.pushToTabularData(control.value);
+            this.clientData.push(new TabularWithAttachments({...control.value, clientId: this.clientService.selectedClient.id}));
           }
+          this.clientData[this.clientData.length - 1].attachments = [
+            ...control.value.attachmentInput1.map(
+              attachment => {
+                attachment.type = 'attachmentInput1';
+                return attachment;
+              }
+            ),
+            ...control.value.attachmentInput2.map(attachment => {
+                attachment.type = 'attachmentInput2';
+                return attachment;
+              }
+            )
+          ];
         }
       }
       this.tabularWithAttachmentsService.updateFromModel(this.clientData).subscribe(null, (err) => {
@@ -161,8 +146,8 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
       date: new FormControl(null),
       tabularInput1: new FormControl(null),
       tabularInput2: new FormControl(null),
-      attachmentInput1: new FormArray([]),
-      attachmentInput2: new FormArray([])
+      attachmentInput1: new FormControl([]),
+      attachmentInput2: new FormControl([])
     });
   }
 
@@ -176,25 +161,14 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
     this.tabularWithAttachmentsService.readAll().subscribe((data) => {
       this.ngZone.run(() => {
         this.clearAllRecordsFromFormArray(this.records);
-        this.clientData = data;
-        this.clientData.getTabularData().forEach((record) => {
+        this.clientData = data.tabularWithAttachmentsData;
+        this.clientData.forEach((record) => {
           this.records.push(this.newEmptyRecord());
-          this.records.at(this.records.length - 1).patchValue(record);
-          this.records.at(this.records.length - 1).get('date').setValue(record.date.toISOString().split('T')[0]);
-          for (let i = 0; i < record.attachmentInput1.length; i++) {
-            (<FormArray>this.records.at(this.records.length - 1).get(['attachmentInput1']))
-            .push(new FormGroup({
-              id: new FormControl(record.attachmentInput1[i].id),
-              fileUri: new FormControl(record.attachmentInput1[i].fileUri)
-            }));
-          }
-          for (let i = 0; i < record.attachmentInput2.length; i++) {
-            (<FormArray>this.records.at(this.records.length - 1).get(['attachmentInput2']))
-            .push(new FormGroup({
-              id: new FormControl(record.attachmentInput2[i].id),
-              fileUri: new FormControl(record.attachmentInput2[i].fileUri)
-            }));
-          }
+          this.records.at(this.records.length - 1).patchValue(record.dataValues);
+          this.records.at(this.records.length - 1).get('attachmentInput1').setValue(
+            record.attachments.filter(attachment => attachment.type === 'attachmentInput1'));
+          this.records.at(this.records.length - 1).get('attachmentInput2').setValue(
+            record.attachments.filter(attachment => attachment.type === 'attachmentInput2'));
         });
         this.records.push(this.newEmptyRecord()); // This is the empty record for new data
         this.records.enable();

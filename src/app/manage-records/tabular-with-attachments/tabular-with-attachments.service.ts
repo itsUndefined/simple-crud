@@ -3,13 +3,15 @@ import { TabularService } from './tabular.service';
 import { DatabaseService } from '../../database.service';
 import { ClientService } from '../../client.service';
 import { appPath } from '../../constants';
-import { TabularWithAttachments, Attachment, TTabularWithAttachments } from './tabular-with-attachments.model';
+import { TabularWithAttachments } from '../../models/tabular-with-attachments';
+import { Attachment } from '../../models/attachment';
 
-import { Observable, Subject, concat, forkJoin } from 'rxjs';
+import { Observable, Subject, concat, forkJoin, from } from 'rxjs';
 
 import { readFile, writeFile, readdir, unlink } from 'fs';
 import { remote } from 'electron';
 import { join } from 'path';
+import { Client } from '../../models/client';
 
 
 @Injectable()
@@ -27,8 +29,8 @@ export class TabularWithAttachmentsService extends TabularService {
     }
   ]);
 
-  constructor(databaseService: DatabaseService, clientService: ClientService) {
-    super(databaseService, clientService);
+  constructor(clientService: ClientService) {
+    super(clientService);
   }
 
   public openImageContextMenu() {
@@ -37,145 +39,37 @@ export class TabularWithAttachmentsService extends TabularService {
     });
   }
 
-  public readAll(): Observable<TabularWithAttachments> {
-    return new Observable(subscriber => {
-      super.readAll().subscribe((rowsTabular) => {
-        this.databaseService.DB.all(
-          `SELECT attachments.* FROM tabularWithAttachments INNER JOIN attachments ON tabularWithAttachments.id = attachments.recordId
-          WHERE tabularWithAttachments.clientId = ?`,
-          this.clientService.selectedClient.id,
-          (err, rowsAttachment: Attachment[]) => {
-            if (err) {
-              subscriber.error(err);
-              return subscriber.complete();
-            }
-            const data: TTabularWithAttachments[] = rowsTabular
-            .getTabularData()
-            .map(
-              record => ({
-                attachmentInput1: [],
-                attachmentInput2: [],
-                ...record
-              })
-            );
-            rowsAttachment.forEach(attachment => {
-              data[data.map(record => record.id).indexOf(attachment.recordId)][attachment.type].push(attachment);
-            });
-            subscriber.next(new TabularWithAttachments(this.clientService.selectedClient, data));
-            return subscriber.complete();
-          }
-        );
-      }, (err) => {
-        subscriber.error(err);
-        return subscriber.complete();
+  public readAll(): Observable<Client> {
+    return from((async () => {
+      return await Client.findById(this.clientService.selectedClient.id, {
+        include: [{
+          model: TabularWithAttachments,
+          include: [Attachment]
+        }]
       });
-    });
-  }
-
-  private addAttachmentToDatabase(attachment: Attachment): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.run(
-        `INSERT INTO attachments
-          (recordId, fileUri, type)
-        VALUES
-          (?, ?, ?)`,
-        [attachment.recordId, attachment.fileUri, attachment.type],
-        (err) => {
-          if (err) {
-            subscriber.error(err);
-            return subscriber.complete();
-          }
-          subscriber.next();
-          subscriber.complete();
-        }
-      );
-    });
+    })());
   }
 
   public deleteAttachmentFromDatabase(attachment: Attachment): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.run(
-        `DELETE FROM attachments WHERE id = ?`,
-        attachment.id,
-        (err) => {
-          if (err) {
-            subscriber.error(err);
-            return subscriber.complete();
-          }
-          subscriber.next();
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
-  public createSingle(newRow: TTabularWithAttachments): Observable<void[]> {
-    return new Observable(subscriber => {
-      super.createSingle(newRow).subscribe((insertId) => {
-        const observables: Observable<void>[] = [];
-        newRow.attachmentInput1.forEach(attachment => {
-          observables.push(this.addAttachmentToDatabase({
-            recordId: insertId,
-            type: 'attachmentInput1',
-            fileUri: attachment.fileUri
-          }));
-        });
-        newRow.attachmentInput2.forEach(attachment => {
-          observables.push(this.addAttachmentToDatabase({
-            recordId: insertId,
-            type: 'attachmentInput2',
-            fileUri: attachment.fileUri
-          }));
-        });
-        forkJoin(observables).subscribe((value) => {
-          subscriber.next(value);
-        }, (err) => {
-          subscriber.error(err);
-        }, () => {
-          subscriber.complete();
-        });
-      }, (err) => {
-        subscriber.error(err);
-        subscriber.complete();
-      });
-    });
-
-  }
-
-  public updateSingle(
-    existingRow: TTabularWithAttachments,
-    addedAttachments?: Attachment[]
-  ): Observable<void[]> {
-    const observables: Observable<void>[] = [super.updateSingle(existingRow)];
-    addedAttachments.forEach(attachment => {
-      observables.push(this.addAttachmentToDatabase(attachment));
-    });
-    return forkJoin(observables);
-  }
-
-  public updateFromModel(tabularWithAttachments: TabularWithAttachments): Observable<void[][]> {
-    const observables: Observable<void[]>[] = [];
-    tabularWithAttachments.getPendingModifications().forEach((pendingRecord, index) => {
-      const record1 = tabularWithAttachments.getTabularData()[tabularWithAttachments.getTabularData()
-      .map(record => record.id)
-      .indexOf(pendingRecord.id)];
-      observables.push(
-        this.updateSingle(
-          record1,
-          [
-            ...tabularWithAttachments.getPendingModifications()[index].attachmentInput1,
-            ...tabularWithAttachments.getPendingModifications()[index].attachmentInput2
-          ]
-        )
-      );
-    });
-
-    tabularWithAttachments.getTabularData().forEach((record) => {
-      if (!record.id) {
-        observables.push(this.createSingle(record));
+    return from((async () => {
+      if (attachment.id) {
+        await attachment.destroy();
       }
-    });
-    return forkJoin(observables);
+    })());
+  }
+
+  public updateFromModel(tabularWithAttachments: TabularWithAttachments[]): Observable<void> {
+    return from((async () => {
+      for (let i = 0; i < tabularWithAttachments.length; i++) {
+        if (tabularWithAttachments[i].changed() || !tabularWithAttachments[i].id) {
+          await tabularWithAttachments[i].save();
+        }
+        tabularWithAttachments[i].attachments.forEach((attachment) => {
+          attachment.recordId = tabularWithAttachments[i].id;
+          attachment.save();
+        });
+      }
+    })());
   }
 
 

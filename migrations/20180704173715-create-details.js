@@ -5,9 +5,10 @@ module.exports = {
     return new Promise((resolve, reject) => {
       queryInterface.createTable('Details', {
         clientId: {
-          type: Sequelize.INTEGER,
           allowNull: false,
-          primaryKey: true
+          autoIncrement: false,
+          primaryKey: true,
+          type: Sequelize.INTEGER
         },
         identification: Sequelize.INTEGER,
         input1: Sequelize.STRING,
@@ -29,8 +30,7 @@ module.exports = {
             table: 'Clients',
             field: 'id'
           },
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
+          onDelete: 'CASCADE'
         }).then(() => {
           resolve();
         }).catch((err) => {

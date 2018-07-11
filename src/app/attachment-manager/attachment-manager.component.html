@@ -3,9 +3,9 @@
 </div> -->
 
 <div class="input-group input-group-sm">
-  <input [ngStyle]="{cursor: formArray.length ? 'pointer' : 'default'}" type="button" class="form-control" [value]="formArray.disabled ? '' : 'Available images: ' + formArray.length" [disabled]="formArray.disabled" (click)="openImageViewer()">
+  <input [ngStyle]="{cursor: attachments.length ? 'pointer' : 'default'}" type="button" class="form-control" [value]="attachmentsControl.disabled ? '' : 'Available images: ' + attachments.length" [disabled]="attachmentsControl.disabled" (click)="openImageViewer()">
   <div class="input-group-append">
-    <button class="btn btn-outline-success" type="button" (click)="openSelectAttachmentsDialog()" [disabled]="formArray.disabled">Add File(s)</button>
+    <button class="btn btn-outline-success" type="button" (click)="openSelectAttachmentsDialog()" [disabled]="attachmentsControl.disabled">Add File(s)</button>
   </div>
 </div>
 
@@ -25,12 +25,12 @@
         (click)="onImageLeftClick(selectedImage)"
         (contextmenu)="onImageRightClick(selectedImage)"
         class="leftImage"
-        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + formArray.controls[selectedImage].value.fileUri">
+        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + attachments[selectedImage].fileUri">
       <img
         (click)="onImageLeftClick(selectedImage + 1)"
         (contextmenu)="onImageRightClick(selectedImage + 1)"
         class="rightImage"
-        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + formArray.controls[selectedImage + 1].value.fileUri">
+        [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + attachments[selectedImage + 1].fileUri">
   </ng-template>
 
   <ng-template [ngIf]="!dualImages">
@@ -38,15 +38,15 @@
       (click)="$event.stopPropagation()"
       (contextmenu)="onImageRightClick(selectedImage)"
       class="singleImage"
-      [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + formArray.controls[selectedImage].value.fileUri">
+      [src]="'file:///C:/Users/itsUndefined/Desktop/Development/SoftwareProjects/simple-crud/' + attachments[selectedImage].fileUri">
   </ng-template>
 
   <i
     class="fa fa-arrow-circle-o-right fa-4x"
     (click)="nextImage($event)"
     [ngStyle]="{
-      cursor: selectedImage !== formArray.length - 1 && !dualImages || selectedImage !== formArray.length - 2 && dualImages ? 'pointer' : 'not-allowed',
-      color: selectedImage !== formArray.length - 1 && !dualImages || selectedImage !== formArray.length - 2 && dualImages ? 'black' : 'gray'
+      cursor: selectedImage !== attachments.length - 1 && !dualImages || selectedImage !== attachments.length - 2 && dualImages ? 'pointer' : 'not-allowed',
+      color: selectedImage !== attachments.length - 1 && !dualImages || selectedImage !== attachments.length - 2 && dualImages ? 'black' : 'gray'
     }">
   </i>
 </div>

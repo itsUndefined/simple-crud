@@ -1,7 +1,6 @@
 import { Observable, Subject, from } from 'rxjs';
-import { DatabaseService } from './database.service';
 import { Injectable, ApplicationRef } from '@angular/core';
-import { mkdir } from 'fs';
+import { mkdir, rmdir } from 'fs';
 import { appPath } from './constants';
 import { Client } from './models/client';
 import { Details } from './models/details';
@@ -9,6 +8,7 @@ import { promisify } from 'bluebird';
 
 
 const mkdirP = promisify(mkdir);
+const rmdirP = promisify(rmdir);
 
 
 @Injectable()
@@ -18,7 +18,7 @@ export class ClientService {
   // Sends an event when the client is changed and also returns the previous client for saving.
   public onSelectedClient: Subject<Client> = new Subject();
 
-  constructor(private databaseService: DatabaseService, private applicationRef: ApplicationRef) { }
+  constructor(private applicationRef: ApplicationRef) { }
 
   public setSelectedClient(client: Client): void {
     let previousClient = null;
@@ -72,11 +72,7 @@ export class ClientService {
   // TODO: DELETE ALL USER DATA + FOLDERS
   public delete(client: Client): Observable<void> {
     return from((async () => {
-      await Details.destroy({
-        where: {
-          clientId: client.id
-        }
-      });
+      await rmdirP(`${appPath}\\data\\${client.id}`);
       await client.destroy();
     })());
   }

@@ -1,15 +1,33 @@
-import { Model, Table, Column, AllowNull, Sequelize } from 'sequelize-typescript';
+import { Model, Table, Column, DataType, HasOne, HasMany, AllowNull } from 'sequelize-typescript';
+import { Details } from './details';
+import { Tabular } from './tabular';
+import { TabularWithAttachments } from './tabular-with-attachments';
 
-@Table({tableName: 'Clients', modelName: 'Clients'})
+@Table({ tableName: 'Clients', modelName: 'Clients' })
 export class Client extends Model<Client> {
 
-  @AllowNull(false) @Column firstName: string;
+  @AllowNull(false)
+  @Column
+  firstName: string;
 
-  @AllowNull(false) @Column lastName: string;
+  @AllowNull(false)
+  @Column
+  lastName: string;
 
-  @Column gender: string;
+  @Column(DataType.ENUM(['male', 'female']))
+  gender: 'male' | 'female';
 
-  @Column(Sequelize.DATEONLY) dateOfBirth: Date;
+  @Column(DataType.DATEONLY)
+  dateOfBirth: Date;
+
+  @HasOne(() => Details)
+  details: Details;
+
+  @HasMany(() => Tabular)
+  tabularData: Tabular[];
+
+  @HasMany(() => TabularWithAttachments)
+  tabularWithAttachmentsData: TabularWithAttachments[];
 
   get fullName(): string {
     return `${this.lastName} ${this.firstName}`;

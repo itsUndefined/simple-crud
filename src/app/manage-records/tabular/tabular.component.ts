@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { TabularService } from './tabular.service';
-import { Tabular } from './tabular.model';
+import { Tabular } from '../../models/tabular';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
@@ -17,7 +17,7 @@ export class TabularComponent implements OnInit, OnDestroy {
 
   recordsForm: FormGroup;
 
-  clientData: Tabular;
+  clientData: Tabular[];
 
   clientChanged: Subscription;
 
@@ -90,9 +90,9 @@ export class TabularComponent implements OnInit, OnDestroy {
         const control = this.records.controls[i];
         if (control.dirty) {
           if (control.value.id) {
-            this.clientData.modifyData(control.value);
+            this.clientData[this.clientData.map((record) => record.id).indexOf(control.value.id)].setAttributes(control.value);
           } else {
-            this.clientData.pushToTabularData(control.value);
+            this.clientData.push(new Tabular({...control.value, clientId: this.clientService.selectedClient.id}));
           }
         }
       }
@@ -136,22 +136,24 @@ export class TabularComponent implements OnInit, OnDestroy {
     });
   }
 
-  private clearAllRecordsFromFormArray(formArray: FormArray) {
-    while (formArray.length !== 0) {
-      formArray.removeAt(0);
+  private clearAllRecordsFromFormArray() {
+    while (this.records.length !== 0) {
+      this.records.removeAt(0);
     }
   }
 
   private fetchAllRecords() {
     this.tabularService.readAll().subscribe((data) => {
       this.ngZone.run(() => {
-        this.clearAllRecordsFromFormArray(this.records);
-        this.clientData = data;
-        this.clientData.getTabularData().forEach((record) => {
+        this.clearAllRecordsFromFormArray();
+        this.clientData = data.tabularData;
+        this.clientData.forEach((record) => {
           this.records.push(this.newEmptyRecord());
-          this.records.at(this.records.length - 1).patchValue(record);
-          this.records.at(this.records.length - 1).get('date').setValue(record.date.toISOString().split('T')[0]);
+          this.records.at(this.records.length - 1).patchValue(record.dataValues);
         });
+        this.records.setValue((<Array<{date: string}>>this.records.value).sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        }));
         this.records.push(this.newEmptyRecord()); // This is the empty record for new data
         this.records.enable();
       });

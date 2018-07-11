@@ -1,11 +1,8 @@
-import { Table, Model, Column, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import { Table, Model, Column, ForeignKey } from 'sequelize-typescript';
 import { Client } from './client';
 
 @Table
 export class Details extends Model<Details> {
-
-  @BelongsTo(() => Client)
-  client: Client;
 
   @ForeignKey(() => Client)
   @Column({primaryKey: true, autoIncrement: false})
