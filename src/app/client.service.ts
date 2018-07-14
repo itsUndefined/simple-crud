@@ -1,9 +1,16 @@
-import { Observable, Subject } from 'rxjs';
-import { DatabaseService } from './database.service';
+import { Observable, Subject, from } from 'rxjs';
 import { Injectable, ApplicationRef } from '@angular/core';
-import { Client, TClient, Details } from './client.model';
-import { mkdir } from 'fs';
+import { mkdir, rmdir, unlink, readdir } from 'fs';
 import { appPath } from './constants';
+import { Client } from './models/client';
+import { Details } from './models/details';
+import { promisify } from 'bluebird';
+
+
+const mkdirP = promisify(mkdir);
+const rmdirP = promisify(rmdir);
+const unlinkP = promisify(unlink);
+const readdirP = promisify(readdir);
 
 
 @Injectable()
@@ -13,7 +20,7 @@ export class ClientService {
   // Sends an event when the client is changed and also returns the previous client for saving.
   public onSelectedClient: Subject<Client> = new Subject();
 
-  constructor(private databaseService: DatabaseService, private applicationRef: ApplicationRef) { }
+  constructor(private applicationRef: ApplicationRef) { }
 
   public setSelectedClient(client: Client): void {
     let previousClient = null;
@@ -28,127 +35,49 @@ export class ClientService {
   }
 
   public readAll(): Observable<Client[]> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.all('SELECT id, lastName, firstName, dateOfBirth, identification FROM clients', (err, rows: TClient[]) => {
-        if (err) {
-          subscriber.error(err);
-          return subscriber.complete();
-        }
-        subscriber.next(
-          rows.map((client) => {
-            return new Client(client);
-          })
-        );
-        return subscriber.complete();
-      });
-    });
+    return from((async () => {
+      return await Client.findAll();
+    })());
   }
 
-  public readSingleDetails(): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.get(
-        `SELECT input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, input11, input12
-        FROM details WHERE clientId = ?`,
-        this.selectedClient.id, (err, row: Details) => {
-          if (err) {
-            subscriber.error(err);
-            return subscriber.complete();
-          }
-          this.selectedClient.details = row;
-          subscriber.next();
-          return subscriber.complete();
-        }
-      );
-    });
+  public readSingleWithDetails(): Observable<Details> {
+    return from((async () => {
+      return await Details.findById(this.selectedClient.id);
+    })());
   }
 
-  public writeDetails(client: Client): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.serialize(() => {
-        this.databaseService.DB.run('UPDATE clients SET identification = ? WHERE id = ?', [client.identification, client.id], (err) => {
-          if (err) {
-            subscriber.error(err);
-            return subscriber.complete();
-          }
-        });
-        this.databaseService.DB.run(
-          `INSERT OR REPLACE INTO details
-          (clientId, input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, input11, input12)
-              VALUES
-          (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `, [client.id, client.details.input1, client.details.input2,
-          client.details.input3, client.details.input4,
-          client.details.input5, client.details.input6,
-          client.details.input7, client.details.input8,
-          client.details.input9, client.details.input10,
-          client.details.input11, client.details.input12],
-          (err) => {
-            if (err) {
-              subscriber.error(err);
-              return subscriber.complete();
-            }
-            subscriber.next();
-            return subscriber.complete();
-          }
-        );
-      });
-    });
+  public writeDetails(details: Details): Observable<void> {
+    return from((async () => {
+      const data = await Details.findById(details.clientId);
+      if (!data) {
+        await details.save();
+        return;
+      }
+      data.setAttributes(details.dataValues);
+      data.save();
+    })());
   }
 
   public create(client: Client): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.run('INSERT INTO clients (lastName, firstName, dateOfBirth, identification) VALUES (?, ? ,? ,?)',
-      [client.lastName, client.firstName, client.dateOfBirth, client.identification], function (err) {
-        if (err) {
-          subscriber.error(err);
-          return subscriber.complete();
-        }
-        mkdir(`${appPath}\\data\\${this.lastID}`, (err1) => {
-          if (err1) {
-            subscriber.error(err1);
-            return subscriber.complete();
-          }
-          subscriber.next();
-          return subscriber.complete();
-        });
-      });
-    });
+    return from((async () => {
+      await client.save();
+      await mkdirP(`${appPath}\\data\\${client.id}`);
+    })());
   }
 
   public update(client: Client): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.run('UPDATE clients SET lastName = ?, firstName = ?, dateOfBirth = ?, identification = ? WHERE id = ?',
-      [client.lastName, client.firstName, client.dateOfBirth, client.identification, client.id], (err) => {
-        if (err) {
-          subscriber.error(err);
-          return subscriber.complete();
-        }
-        subscriber.next();
-        return subscriber.complete();
-      });
-    });
+    return from((async () => {
+      await client.save();
+    })());
   }
 
-
-  // TODO: DELETE ALL USER DATA + FOLDERS
   public delete(client: Client): Observable<void> {
-    return new Observable(subscriber => {
-      this.databaseService.DB.serialize(() => {
-        this.databaseService.DB.run('DELETE FROM details WHERE clientId = ?', client.id, (err) => {
-          if (err) {
-            subscriber.error(err);
-            return subscriber.complete();
-          }
-        });
-        this.databaseService.DB.run('DELETE FROM clients WHERE id = ?', client.id, (err) => {
-          if (err) {
-            subscriber.error(err);
-            return subscriber.complete();
-          }
-          subscriber.next();
-          return subscriber.complete();
-        });
+    return from((async () => {
+      (await readdirP(`${appPath}\\data\\${client.id}`)).forEach(async (file) => {
+        await unlinkP(`${appPath}\\data\\${client.id}\\${file}`);
       });
-    });
+      await rmdirP(`${appPath}\\data\\${client.id}`);
+      await client.destroy();
+    })());
   }
 }

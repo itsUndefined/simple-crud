@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ClientService } from '../../client.service';
 import { Subscription } from 'rxjs';
-import { Client, Details } from '../../client.model';
+import { Client } from '../../models/client';
+import { Details } from '../../models/details';
 import { ipcRenderer } from 'electron';
 
 @Component({
@@ -67,9 +68,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   private saveClientData(client: Client, callback?: () => void ) {
     if (client) {
-      client.details = this.form.value; // Value also has identification but that's not a problem.
-      client.identification = this.form.value.identification;
-      this.clientService.writeDetails(client).subscribe(() => {
+      const details = new Details(this.form.value);
+      details.clientId = client.id;
+      this.clientService.writeDetails(details).subscribe(() => {
         if (callback) { // callback is only used if there is a requirement to know when this is done.
           callback();
         }
@@ -82,13 +83,10 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   private fetchClientData() {
-    this.clientService.readSingleDetails().subscribe(() => {
-      let formValues: Details & {identification?: number} = {};
-      if (this.clientService.selectedClient.details) {
-        formValues = Object.assign({}, this.clientService.selectedClient.details);
+    this.clientService.readSingleWithDetails().subscribe((details) => {
+      if (details) {
+        this.form.patchValue(details.dataValues);
       }
-      formValues.identification = this.clientService.selectedClient.identification;
-      this.form.patchValue(formValues);
       this.form.enable();
     }, (err) => {
       throw err;

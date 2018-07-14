@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ClientService } from '../client.service';
-import { Client } from '../client.model';
+import { Client } from '../models/client';
 
 @Component({
   selector: 'app-manage-records',

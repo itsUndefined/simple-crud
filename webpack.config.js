@@ -121,7 +121,7 @@ const postcssPlugins = function (loader) {
 
 module.exports = {
   "target": "electron-renderer",
-  "externals": ["sqlite3"],
+  "externals": ["sqlite3", "sequelize"],
   "resolve": {
     "extensions": [
       ".ts",

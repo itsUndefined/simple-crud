@@ -11,10 +11,6 @@ export class AppComponent implements OnInit {
   constructor(private databaseService: DatabaseService, private dropdownConfig: NgbDropdownConfig) {}
 
   ngOnInit() {
-    this.databaseService.init().catch((err) => {
-      throw err;
-    });
-
     this.dropdownConfig.placement = 'bottom-right';
   }
 }

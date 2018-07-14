@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
-import { Client } from '../client.model';
+import { Client } from '../models/client';
 import { ClientService } from '../client.service';
 
 @Component({
