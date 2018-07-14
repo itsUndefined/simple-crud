@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { TabularService } from './tabular.service';
-import { DatabaseService } from '../../database.service';
 import { ClientService } from '../../client.service';
 import { appPath } from '../../constants';
 import { TabularWithAttachments } from '../../models/tabular-with-attachments';
 import { Attachment } from '../../models/attachment';
 
-import { Observable, Subject, concat, forkJoin, from } from 'rxjs';
+import { Observable, Subject, concat, from } from 'rxjs';
 
 import { readFile, writeFile, readdir, unlink } from 'fs';
 import { remote } from 'electron';
@@ -15,7 +13,7 @@ import { Client } from '../../models/client';
 
 
 @Injectable()
-export class TabularWithAttachmentsService extends TabularService {
+export class TabularWithAttachmentsService {
 
 
   onImageContextMenuItemSelected: Subject<'delete'> = new Subject();
@@ -29,9 +27,7 @@ export class TabularWithAttachmentsService extends TabularService {
     }
   ]);
 
-  constructor(clientService: ClientService) {
-    super(clientService);
-  }
+  constructor(private clientService: ClientService) { }
 
   public openImageContextMenu() {
     this.imageContextMenu.popup({

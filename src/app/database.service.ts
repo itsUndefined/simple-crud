@@ -9,8 +9,6 @@ import { Attachment } from './models/attachment';
 
 
 export class DatabaseService {
-  // silence error
-  public DB;
 
   public sequelize = new Sequelize({
     database: null,

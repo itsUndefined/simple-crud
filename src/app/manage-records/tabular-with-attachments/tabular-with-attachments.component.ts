@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TabularWithAttachmentsService } from './tabular-with-attachments.service';
 import { ClientService } from '../../client.service';
 import { TabularWithAttachments } from '../../models/tabular-with-attachments';
-import { Attachment } from '../../models/attachment';
-import { FormGroup, FormArray, FormControl, AbstractControl } from '@angular/forms';
+import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
 
@@ -170,6 +169,9 @@ export class TabularWithAttachmentsComponent implements OnInit, OnDestroy {
           this.records.at(this.records.length - 1).get('attachmentInput2').setValue(
             record.attachments.filter(attachment => attachment.type === 'attachmentInput2'));
         });
+        this.records.setValue((<Array<{ date: string }>>this.records.value).sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        }));
         this.records.push(this.newEmptyRecord()); // This is the empty record for new data
         this.records.enable();
       });

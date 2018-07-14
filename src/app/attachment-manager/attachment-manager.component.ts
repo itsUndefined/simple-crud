@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, NgZone, HostListener } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { TabularWithAttachmentsService } from '../manage-records/tabular-with-attachments/tabular-with-attachments.service';
 import { remote } from 'electron';
 import { Subscription } from 'rxjs';
 import { Attachment } from '../models/attachment';
+import { appPath } from '../constants';
 
 @Component({
   selector: 'app-attachment-manager',
@@ -11,6 +12,8 @@ import { Attachment } from '../models/attachment';
   styleUrls: ['./attachment-manager.component.css']
 })
 export class AttachmentManagerComponent implements OnInit {
+
+  appPath = appPath;
 
   @Input() attachmentsControl: FormControl;
   get attachments() {
@@ -116,7 +119,7 @@ export class AttachmentManagerComponent implements OnInit {
       }) || []
     ).subscribe((fileUri) => {
       this.ngZone.run(() => {
-        this.attachments.push(new Attachment({fileUri}));
+        this.attachments.push(new Attachment({fileUri: fileUri.slice(1, fileUri.length)}));
         this.attachmentsControl.markAsDirty();
       });
     }, (err) => {

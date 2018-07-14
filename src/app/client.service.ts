@@ -1,6 +1,6 @@
 import { Observable, Subject, from } from 'rxjs';
 import { Injectable, ApplicationRef } from '@angular/core';
-import { mkdir, rmdir } from 'fs';
+import { mkdir, rmdir, unlink, readdir } from 'fs';
 import { appPath } from './constants';
 import { Client } from './models/client';
 import { Details } from './models/details';
@@ -9,6 +9,8 @@ import { promisify } from 'bluebird';
 
 const mkdirP = promisify(mkdir);
 const rmdirP = promisify(rmdir);
+const unlinkP = promisify(unlink);
+const readdirP = promisify(readdir);
 
 
 @Injectable()
@@ -69,9 +71,11 @@ export class ClientService {
     })());
   }
 
-  // TODO: DELETE ALL USER DATA + FOLDERS
   public delete(client: Client): Observable<void> {
     return from((async () => {
+      (await readdirP(`${appPath}\\data\\${client.id}`)).forEach(async (file) => {
+        await unlinkP(`${appPath}\\data\\${client.id}\\${file}`);
+      });
       await rmdirP(`${appPath}\\data\\${client.id}`);
       await client.destroy();
     })());
